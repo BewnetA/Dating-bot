@@ -1,7 +1,6 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InputMediaPhoto
 from aiogram.filters import Command
-from telegram import InputMediaPhoto
 
 from database import db
 from utils.helpers import format_profile_safe, parse_photos
@@ -31,12 +30,12 @@ async def show_profile(message: Message):
             InputMediaPhoto(
                 media=photos[0],
                 caption=profile_text
-            )  # ✅ FIXED: Remove .to_dict()
+            )
         )
         
         # Second photo without caption
         media_group.append(
-            InputMediaPhoto(media=photos[1])  # ✅ FIXED: Remove .to_dict()
+            InputMediaPhoto(media=photos[1]) 
         )
         
         await message.bot.send_media_group(

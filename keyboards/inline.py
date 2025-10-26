@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from utils.translations import get_text
 
 # Profile actions
 def get_profile_actions_keyboard(profile_user_id: int):
@@ -37,11 +38,10 @@ def get_coin_packages_keyboard():
     """Keyboard for coin packages"""
     keyboard = InlineKeyboardBuilder()
     packages = [
-        ("💰 100 Coins - $4.99", "coins_100"),
-        ("💰 250 Coins - $9.99", "coins_250"), 
-        ("💰 500 Coins - $17.99", "coins_500"),
-        ("💰 1000 Coins - $29.99", "coins_1000"),
-        ("💰 2500 Coins - $69.99", "coins_2500")
+        ("10000 Coins for 100 ETB", "coins_10000"),
+        ("35000 Coins for 300 ETB", "coins_35000"), 
+        ("60000 Coins for 500 ETB", "coins_60000"),
+        ("150000 Coins for 1000 ETB", "coins_150000"),
     ]
     
     for text, code in packages:
@@ -69,3 +69,31 @@ def get_cancel_payment_keyboard():
     keyboard = InlineKeyboardBuilder()
     keyboard.add(InlineKeyboardButton(text="❌ Cancel Payment", callback_data="cancel_payment"))
     return keyboard.as_markup()
+
+def get_view_all_likers_keyboard(language: str):
+    """Keyboard for viewing all likers"""
+    
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=get_text('view_all_likers_button', language),
+                    callback_data="view_all_likers"
+                )
+            ]
+        ]
+    )
+
+def get_find_new_people_keyboard(language: str):
+    """Keyboard for finding new people"""
+    
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=get_text('find_new_people', language),
+                    callback_data="find_matches_from_likes"
+                )
+            ]
+        ]
+    )

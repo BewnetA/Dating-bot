@@ -1,9 +1,10 @@
 # utils/translations.py
+"buy_coins"
 def get_user_language(user_id: int, db) -> str:
     """Get user's preferred language from database"""
     user_data = db.get_user(user_id)
     return user_data.get('language', 'english') if user_data else 'english'
-
+"admin_new_user"
 def get_text(key: str, language: str = 'english', **kwargs) -> str:
     """Get translated text for a given key and language"""
     translations = {
@@ -68,7 +69,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'registration_success': "You can now start finding matches and connecting with people.",
             
             # Admin notifications (keep in English)
-            'admin_new_user': "🆕 New user started the bot:\n👤 Name: {first_name} {last_name}\n🆔 ID: {user_id}\n📱 Username: {username}",
+            'admin_new_user': "🆕 New user started the bot:\n👤 Name: {first_name} {last_name}\n🆔 ID: {user_id}\n📱 Username: @{username}",
             'no_username': "No username",
             'incomplete_registration': "Please complete your registration first using /start",
             'no_photos_profile': "Please complete your profile and add photos first to start browsing.",
@@ -103,10 +104,10 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'no_matches_found': "😔 No new profiles found at the moment.\nCheck back later for new matches!",
             'action_prompt': "🔥 Nice profile! Ready to make a move?",
             'no_likes_yet': "No one has liked your profile yet.\nKeep browsing to get more visibility!",
-            'likes_count': "{count} people liked your profile!\n\nUse /browse to like them back and create matches!",
+            'likes_count': "{count} people liked your profile!\n\nUse /search to like them back and create matches!",
             'liker_number': "Liker #{number}",
             'someone_liked_back': "🔥 Someone liked you back{extra_photos}! Interested?",
-            'no_matches_yet': "You don't have any matches yet.\nStart liking profiles with /browse to get matches!",
+            'no_matches_yet': "You don't have any matches yet.\nStart liking profiles with /search to get matches!",
             'matches_count': "💕 You have {count} matches!\n\nHere are your mutual matches:",
             'match_number': "Match #{number}",
             'its_a_match': "💕 It's a match{extra_photos}! Start the conversation?",
@@ -128,7 +129,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'language_update_failed': "Failed to update language. Please try again.",
             
             # Coin system
-            'buy_coins': "💰 Buy Coins",
+            'buy_coins': "Choose your coin package:",
             'package_selected': "🛒 Package Selected: {package}\n\n{coins} Coins - ${price}\n\n💰 Payment Instructions:\n1. Send ${price} via:\n   • 💳 Credit Card\n   • 📱 Mobile Payment\n   • 🌐 Online Transfer\n\n2. Take a screenshot of your payment confirmation\n3. Send the screenshot here\n\nAfter verification, coins will be added to your account within 24 hours.",
             'payment_screenshot_received': "✅ Payment Screenshot Received!\n\nYour payment is under review. We'll notify you once it's processed.\n\n⏳ Processing Time: Usually within 24 hours\n📞 Support: Contact @admin if you have questions",
             'invalid_screenshot': "Please send a screenshot of your payment confirmation.\n\nIf you're having trouble, please contact @admin for assistance.",
@@ -165,29 +166,28 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
 🤖 Ethiopia Connect Bot - Commands Guide
 
 🔍 Discovery & Matching:
-• `/browse` - Discover new profiles
-• `/likes` - See who liked your profile  
-• `/matches` - See your mutual matches
+• /search - Discover new profiles
+• /likers - See who liked your profile  
+• /matches - See your mutual matches
 
 👤 Profile Management:
-• `/profile` - View your profile
-• `/language` - Change bot language
+• /profile - View your profile
+• /language - Change bot language
 
 💰 Premium Features:
-• `/buycoins` - Purchase coins for premium features
+• /buycoins - Purchase coins for premium features
 
 🛡️ Safety & Support:
-• `/complain` - Report issues or send feedback
-• `/deleteaccount` - Permanently delete your account
+• /complaint - Report issues or send feedback
+• /deleteaccount - Permanently delete your account
 
 💌 Messaging:
 • Use the inline buttons when browsing profiles to message users
 
 🛠 Utility Commands:
-• `/help` - Show this help message
-• `/cancel` - Cancel current operation
+• /help - Show this help message
+• /cancel - Cancel current operation
 
-💡 Tip: Use the menu buttons for quick access to main features!
             """,
             
             # Complaint types (for dynamic use)
@@ -222,6 +222,29 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'likes_list_header': "❤️ Users who liked your profile:\n\n",
             'no_matches_yet_list': "No matches yet.", 
             'matches_list_header': "💕 Your mutual matches:\n\n",
+            'max_photos_reached': '❌ Maximum of 2 photos reached. Registration completed with your photos.',
+            'one_photo_added': '✅ 1 photo added to your profile',
+            'two_photos_added': '✅ 2 photos added to your profile',
+
+            'insufficient_coins_for_message': '❌ You need {cost} coins to send a message. You have insufficient balance.',
+            'message_sent_free_remaining': '✅ Message sent! You have {remaining} free messages remaining.',
+            'message_sent_coins_deducted': '✅ Message sent! {cost} coins deducted. Remaining: {remaining} coins',
+            'free_likers_display': '👥 Showing {count} of {total} people who liked you (free preview):',
+            'more_likers_available': '👀 There are {count} more people who liked you! Use /view_all_likers command or click below to see all of them for {cost} coins.',
+            'insufficient_coins_for_likers': '❌ You need {cost} coins to view all likers. You have insufficient balance.',
+            'viewing_all_likers': '👀 Showing all {total} people who liked you! ({cost} coins deducted)',
+            'buy_coins_button': '💰 Buy Coins',
+            'view_all_likers_button': '👀 View All Likers',
+            'coin_deduction_failed': '❌ Failed to deduct coins. Please try again.',
+            'free_conis_awarded': '🎉 Welcome! You received {coins} free coins to start messaging other users!',
+            'coins_balance': '💰 Your coin balance: {coins} coins',
+            'free_messages_remaining': '📨 Free messages remaining: {remaining}',
+            'buy_coins_options': '💎 Choose a coin package:',
+            'no_coins_for_likers': '❌ You need {cost} coins to view all likers. You have insufficient balance.',
+            "welcome_back": "Welcome back, {first_name}! 🎉",
+  "registration_incomplete": "It looks like you haven't completed your registration yet. Let's finish setting up your profile.",
+  "no_username": "NoUsername",
+
 
             # Errors
             'error': "❌ Error",
@@ -320,10 +343,10 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'no_matches_found': "😔 በአሁኑ ጊዜ ምንም አዳዲስ መገለጫዎች አልተገኙም።\nቆይተው ይመልከቱ!",
             'action_prompt': "🔥 ጥሩ መገለጫ! ለመስራት ዝግጁ ነዎት?",
             'no_likes_yet': "እስካሁን ማንም መገለጫዎን አላብዝተም።\nተጨማሪ እይታ ለማግኘት መሰረም ይቀጥሉ!",
-            'likes_count': "{count} ሰዎች መገለጫዎን አብዝተዋል!\n\nእነሱን ለማብዛት እና ማጣጣሚያዎችን ለመፍጠር /browse ይጠቀሙ!",
+            'likes_count': "{count} ሰዎች መገለጫዎን አብዝተዋል!\n\nእነሱን ለማብዛት እና ማጣጣሚያዎችን ለመፍጠር /search ይጠቀሙ!",
             'liker_number': "አብዝተኛ #{number}",
             'someone_liked_back': "🔥 ማንም አብዝቶሃል{extra_photos}! ፍላጎት አሎት?",
-            'no_matches_yet': "እስካሁን ምንም ማጣጣሚያዎች የሎትም።\nማጣጣሚያዎችን ለማግኘት መገለጫዎችን በ /browse ይምረጡ!",
+            'no_matches_yet': "እስካሁን ምንም ማጣጣሚያዎች የሎትም።\nማጣጣሚያዎችን ለማግኘት መገለጫዎችን በ /search ይምረጡ!",
             'matches_count': "💕 {count} ማጣጣሚያዎች አሎት!\n\nእነዚህ የእርስዎ የጋራ ማጣጣሚያዎች ናቸው፡",
             'match_number': "ማጣጣሚያ #{number}",
             'its_a_match': "💕 ማጣጣሚያ ነው{extra_photos}! ውይይቱን መጀመር ይፈልጋሉ?",
@@ -345,7 +368,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'language_update_failed': "ቋንቋ ማዘመን አልተቻለም። እባክዎ እንደገና ይሞክሩ።",
             
             # Coin system
-            'buy_coins': "💰 ሳንቲሞች ይግዙ",
+            'buy_coins': "የ ሳንቲም ጥቅሎን ይምረጡ፡",
             'package_selected': "🛒 የተመረጠ ጥቅል፡ {package}\n\n{coins} ሳንቲሞች - ${price}\n\n💰 የክፍያ መመሪያዎች፡\n1. ${price} በሚከተለው መንገድ ይላኩ፡\n   • 💳 ክሬዲት ካርድ\n   • 📱 ሞባይል ክፍያ\n   • 🌐 ኦንላይን ማስተላለፊያ\n\n2. የክፍያ ማረጋገጫ ስክሪንሾት ያንሱ\n3. ስክሪንሾቱን እዚህ ይላኩ\n\nከማረጋገጫ በኋላ፣ ሳንቲሞች በ24 ሰዓታት ውስጥ ወደ መለያዎ ይጨመራሉ።",
             'payment_screenshot_received': "✅ የክፍያ ስክሪንሾት ተቀብሏል!\n\nክፍያዎ በግምገማ ላይ ነው። ከተሰራ በኋላ እንገናኝዎታለን።\n\n⏳ የማስኬድ ጊዜ፡ በተለምዶ በ24 ሰዓታት ውስጥ\n📞 ድጋፍ፡ ጥያቄ ካለዎት @admin ያነጋግሩ",
             'invalid_screenshot': "እባክዎ የክፍያ ማረጋገጫ ስክሪንሾት ይላኩ።\n\nችግር ካጋጠመዎት፣ @admin ያነጋግሩ።",
@@ -355,11 +378,11 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'admin_only': "❌ የአስተዳዳሪ ብቻ ትእዛዝ።",
             'addcoins_usage': "አጠቃቀም፡ /addcoins <የተጠቃሚ_መለያ> <የሳንቲም_ብዛት> [ምክንያት]",
             'user_not_found': "❌ ተጠቃሚ አልተገኘም።",
-            'coins_added_success': "✅ ሳንቲሞች በተሳካ ሁኔታ ጨመረ!\n\nተጠቃሚ፡ {first_name} (መለያ፡ {user_id})\nየተጨመሩ ሳንቲሞች፡ {amount}\nአዲስ ሚዛን፡ {balance} ሳንቲሞች\nምክንያት፡ {reason}",
+            'coins_added_success': "✅ ሳንቲሞች በተሳካ ሁኔታ ጨመረ!\n\nተጠቃሚ፡ {first_name} (መለያ፡ {user_id})\nየተጨመሩ ሳንቲሞች፡ {amount}\nአዲስ balance፡ {balance} ሳንቲሞች\nምክንያት፡ {reason}",
             'coins_added_failed': "❌ ሳንቲሞች ማከል አልተቻለም።",
             'invalid_user_id': "❌ የተጠቃሚ መለያ ወይም የሳንቲም ብዛት ትክክል አይደለም። አጠቃቀም፡ /addcoins <የተጠቃሚ_መለያ> <የሳንቲም_ብዛት> [ምክንያት]",
-            'coins_added_user_notification': "🎉 ሳንቲሞች ወደ መለያዎ ጨመረ!\n\n{amount} ሳንቲሞች ወደ መለያዎ ተጨምረዋል።\n\n💰 አዲስ ሚዛን፡ {balance} ሳንቲሞች\n\nምክንያት፡ {reason}",
-            'payment_approved_user': "🎉 ክፍያ ተፅዕኖ ተደርጓል!\n\n{amount} ሳንቲሞች ወደ መለያዎ ተጨምረዋል!\n\n💰 አዲስ ሚዛን፡ {balance} ሳንቲሞች\n\nለግዢዎ እናመሰግናለን! 🎊",
+            'coins_added_user_notification': "🎉 ሳንቲሞች ወደ መለያዎ ጨመረ!\n\n{amount} ሳንቲሞች ወደ መለያዎ ተጨምረዋል።\n\n💰 አዲስ balance፡ {balance} ሳንቲሞች\n\nምክንያት፡ {reason}",
+            'payment_approved_user': "🎉 ክፍያ ተፅዕኖ ተደርጓል!\n\n{amount} ሳንቲሞች ወደ መለያዎ ተጨምረዋል!\n\n💰 አዲስ balance፡ {balance} ሳንቲሞች\n\nለግዢዎ እናመሰግናለን! 🎊",
             'payment_rejected_user': "❌ ክፍያ ተቀባይነት አላገኘም\n\nክፍያዎ ተቀባይነት አላገኘም። ተጨማሪ መረጃ ለማግኘት @admin ያነጋግሩ።\n\nስህተት ነው ብለው ካሰቡ፣ የግብይት ዝርዝሮችዎን ለድጋፍ ያቅርቡ።",
             'no_pending_payments': "✅ ምንም በጥበቃ ላይ ያሉ ክፍያዎች የሉም።",
             'pending_payments_count': "📋 በጥበቃ ላይ ያሉ ክፍያዎች፡ {count}",
@@ -382,29 +405,28 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
 🤖 ኢትዮጵያ ኮንንት ቦት - የትእዛዝ መመሪያ
 
 🔍 መፈለጊያ እና ማጣጣሚያ፡
-• `/browse` - አዳዲስ መገለጫዎችን ይፈልጉ
-• `/likes` - መገለጫዎን የወደዱትን ይመልከቱ  
-• `/matches` - የጋራ ማጣጣሚያዎችዎን ይመልከቱ
+• /search - አዳዲስ መገለጫዎችን ይፈልጉ
+• /likers - መገለጫዎን የወደዱትን ይመልከቱ  
+• /matches - የጋራ ማጣጣሚያዎችዎን ይመልከቱ
 
 👤 የመገለጫ አስተዳደር፡
-• `/profile` - መገለጫዎን ይመልከቱ
-• `/language` - የቦቱን ቋንቋ ይቀይሩ
+• /profile - መገለጫዎን ይመልከቱ
+• /language - የቦቱን ቋንቋ ይቀይሩ
 
 💰 ፕሪሚየም ባህሪያት፡
-• `/buycoins` - ለፕሪሚየም ባህሪያት ሳንቲሞች ይግዙ
+• /buycoins - ለፕሪሚየም ባህሪያት ሳንቲሞች ይግዙ
 
 🛡️ ደህንነት እና ድጋፍ፡
-• `/complain` - ችግሮችን ሪፖርት ያድርጉ ወይም አስተያየት ይላኩ
-• `/deleteaccount` - መለያዎን ዘላቂ ሰርዙ
+• /complaint - ችግሮችን ሪፖርት ያድርጉ ወይም አስተያየት ይላኩ
+• /deleteaccount - መለያዎን ዘላቂ ሰርዙ
 
 💌 መልዕክት መላክ፡
 • መገለጫዎችን ሲያሰሩ መልዕክት ለመላክ ኢንላይን ቁልፎችን ይጠቀሙ
 
 🛠 የፕሮግራም ትእዛዞች፡
-• `/help` - ይህን የእገዛ መልእክት አሳይ
-• `/cancel` - የአሁኑን አሠራር ይቅር
+• /help - ይህን የእገዛ መልእክት አሳይ
+• /cancel - የአሁኑን አሠራር ይቅር
 
-💡 ምክር፡ ለመሰረታዊ ባህሪያት ፈጣን መዳረሻ ለማግኘት የምናሌ ቁልፎችን ይጠቀሙ!
             """,
             
             # Complaint types
@@ -429,7 +451,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'profile_language': "🗣️ {profile_language}  |  🌍 {city}",
             'profile_city_not_specified': "አልተገለጸም",
             'profile_religion_not_specified': "አልተገለጸም",
-            'profile_balance': "💰 ሚዛን፡ {coins} ሳንቲም(ዎች)",
+            'profile_balance': "💰 balance፡ {coins} ሳንቲም(ዎች)",
             
             # Stats formatting (keep emojis as requested)
             'profile_stats': "❤️ Likes: {likes}   🤝 Matches: {matches}",
@@ -439,6 +461,27 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'likes_list_header': "❤️ መገለጫዎን የወደዱት ተጠቃሚዎች፡\n\n",
             'no_matches_yet_list': "እስካሁን ምንም ማጣጣሚያዎች የሉም።",
             'matches_list_header': "💕 የእርስዎ የጋራ ማጣጣሚያዎች፡\n\n",
+            'max_photos_reached': '❌ ከፍተኛ 2 ፎቶዎች ተደርሰዋል። ምዝገባዎ በፎቶዎችዎ ተጠናቅቋል።',
+            'one_photo_added': '✅ 1 ፎቶ ወደ መገለጫዎ ታክሏል',
+            'two_photos_added': '✅ 2 ፎቶዎች ወደ መገለጫዎ ታክለዋል',
+            'insufficient_coins_for_message': '❌ መልእክት ለመላክ {cost} ሳንቲም ያስፈልግዎታል። በቂ balance የለዎትም።',
+            'message_sent_free_remaining': '✅ መልእክት ተልኳል! {remaining} ነፃ መልእክቶች ይቀራሉ።',
+            'message_sent_coins_deducted': '✅ መልእክት ተልኳል! {cost} ሳንቲም ተቀነሰ። የቀረ: {remaining} ሳንቲም',
+            'free_likers_display': '👥 ከ{total} ሰዎች ውስጥ {count} ሰዎችን ያሳይዎታል (ነፃ ቅድመ እይታ):',
+            'more_likers_available': '👀 የበለጠ የወደዱዎ {count} ሰዎች አሉ! ሁሉንም ለማየት /view_all_likers ትእዛዝ ይጠቀሙ ወይም ከዚህ በታች ይጫኑ ለ{cost} ሳንቲም።',
+            'insufficient_coins_for_likers': '❌ ሁሉንም የወደዱዎችን ለማየት {cost} ሳንቲም ያስፈልግዎታል። በቂ balance የለዎትም።',
+            'viewing_all_likers': '👀 ሁሉንም የወደዱዎ {total} ሰዎች እያሳየዎት ነው! ({cost} ሳንቲም ተቀንሷል)',
+            'buy_coins_button': '💰 ሳንቲም ይግዙ',
+            'view_all_likers_button': '👀 ሁሉንም የወደዱዎችን ይመልከቱ',
+            'coin_deduction_failed': '❌ ሳንቲም መቀነስ አልተሳካም። እባክዎ እንደገና ይሞክሩ።',
+            'free_coins_awarded': '🎉 እንኳን ደህና መጡ! ለሌሎች ተጠቃሚዎች መልእክት ለመላክ ለመጀመር {coins} ነፃ ሳንቲም ተቀበሉ!',
+            'coins_balance': '💰 የሳንቲም balanceዎ: {coins} ሳንቲም',
+            'free_messages_remaining': '📨 የቀሩ ነፃ መልእክቶች: {remaining}',
+            'buy_coins_options': '💎 የሳንቲም ጥቅል ይምረጡ:',
+            'no_coins_for_likers': '❌ ሁሉንም likers ለማየት {cost} ሳንቲም ያስፈልግዎታል። በቂ balance የለዎትም።',
+            "welcome_back": "እንኳን ደህና መጡ፣ {first_name}! 🎉",
+            "registration_incomplete": "የእርስዎ ምዝገባ እንዳላጠናቀቁ ይመስላል። መገለጫዎን ለማጠናቀቅ እንቀጥል።",
+            "no_username": "የተጠቃሚ ስም የለም",
 
             # Errors
             'error': "❌ ስህተት",
@@ -537,10 +580,10 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'no_matches_found': "😔 Yeroo ammaa kana profaayilii haaraa hin argamu.\nEegaa!",
             'action_prompt': "🔥 Profaayilii gaari! Muuxannoo gochuu qabdu?",
             'no_likes_yet': "Hanga ammaatti namni hin jaalalle.\nItti fufiinsa argachuuf itti fufi!",
-    'likes_count': "Namni {count} profaayilii kee jaalale!\n\nIsaan deebisuuf /browse fayyadami!",
+    'likes_count': "Namni {count} profaayilii kee jaalale!\n\nIsaan deebisuuf /search fayyadami!",
     'liker_number': "Jaalallee #{number}",
     'someone_liked_back': "🔥 Namni si jaalale{extra_photos}! Jaallatteettaa?",
-    'no_matches_yet': "Hanga ammaatti walqabsiisota hin qabdu.\nWalqabsiisota argachuuf /browse fayyadami!",
+    'no_matches_yet': "Hanga ammaatti walqabsiisota hin qabdu.\nWalqabsiisota argachuuf /search fayyadami!",
     'matches_count': "💕 Walqabsiisota {count} qabda!\n\nKun walqabsiisota keeti:",
     'match_number': "Walqabsiisaa #{number}",
     'its_a_match': "💕 Walqabsiisa{extra_photos}! Haasa'a eegaluu qabdu?",
@@ -562,7 +605,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
     'language_update_failed': "Afaan jijjiiruu hin dandeenye. Irra deebi'i.",
     
     # Coin system
-    'buy_coins': "💰 Santiimaa Bitadhu",
+    'buy_coins': "Paakeejii Saantimaa Kee Godhi Filaduh",
     'package_selected': "🛒 Paakeejii Filatame: {package}\n\n{coins} Santiimaa - ${price}\n\n💰 Qajeelfama Kaffaltii:\n1. ${price} kana fayyadamuun ergi:\n   • 💳 Kaardii liqii\n   • 📱 Kaffaltii Bilbila\n   • 🌐 Dhaabbata Interneetii\n\n2. Mirkaneessaa kaffaltii screenshot godhadhu\n3. Screenshot achitti nu ergi\n\nMirkaneessaa booda, santiimoon akkaataa sa'aatii 24 keessatti meeshaa keetti dabaltama.",
     'payment_screenshot_received': "✅ Screenshot Kaffaltii Nu Ga'e!\n\nKaffaltiin kee ilaalamuu jira. Yeroo hojjatamu si beeksifna.\n\n⏳ Yeroo Hojii: Yeroo baay'ee sa'aatii 24 keessatti\n📞 Gargaarsa: Yoo gaaffi qabaatte @admin waliin dubbadhu",
     'invalid_screenshot': "Mirkaneessaa kaffaltii screenshot nu ergi.\n\nYoo rakkoo qabaatte, @admin waliin dubbadhu.",
@@ -599,29 +642,28 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
 🤖 Botii Ethiopia Connect - Qajeelfama Ajajaa
 
 🔍 Barbaachisaa fi Walqabsiisaa:
-• `/browse` - Profaayilii haaraa barbaadi
-• `/likes` - Profaayilii kee jaalallee ilaali  
-• `/matches` - Walqabsiisota kee ilaali
+• /search - Profaayilii haaraa barbaadi
+• /likers - Profaayilii kee jaalallee ilaali  
+• /matches - Walqabsiisota kee ilaali
 
 👤 Bulchiinsa Profaayilii:
-• `/profile` - Profaayilii kee ilaali
-• `/language` - Afaan botii jijjiiri
+• /profile - Profaayilii kee ilaali
+• /language - Afaan botii jijjiiri
 
 💰 Meeshaa Premium:
-• `/buycoins` - Meeshaa premium'f santiimaa bitadhu
+• /buycoins - Meeshaa premium'f santiimaa bitadhu
 
 🛡️ Nageenyaa fi Gargaarsa:
-• `/complain` - Rakkoo report godhi yookiin yaada ergi
-• `/deleteaccount` - Akaawuntii kee delete godhi
+• /complaint - Rakkoo report godhi yookiin yaada ergi
+• /deleteaccount - Akaawuntii kee delete godhi
 
 💌 Ergaa Erguu:
 • Yeroo profaayilii dubbattu fayyadamaa waliin dubbachuuf button fayyadami
 
 🛠 Ajaja Fayyadamuu:
-• `/help` - Qajeelfama kana agarsiisi
-• `/cancel` - Hojii ammaa dhiisi
+• /help - Qajeelfama kana agarsiisi
+• /cancel - Hojii ammaa dhiisi
 
-💡 Gorsa: Meeshaa ijoo argachuuf button fayyadami!
     """,
     
     # Complaint types
@@ -656,6 +698,27 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'likes_list_header': "❤️ Fayyadamoonni profaayilii kee jaalalan:\n\n",
             'no_matches_yet_list': "Hanga ammaatti walqabsiisota hin jiru.",
             'matches_list_header': "💕 Walqabsiisota kee:\n\n",
+            'max_photos_reached': '❌ Fuulli 2 guutuu geessee. Galmeen kee fuulliwwan keetiin xumurameera.',
+            'one_photo_added': '✅ Fuula 1 profile keetti dabalamte',
+            'two_photos_added': '✅ Fuulli 2 profile keetti dabalamaniiru',
+            'insufficient_coins_for_message': '❌ Ergaa erguuf {cost} coins barbaachisa. Balansii kee hin ga\'u.',
+            'message_sent_free_remaining': '✅ Ergaa darbame! Ergaa bilisaa {remaining} siif hafa.',
+            'message_sent_coins_deducted': '✅ Ergaa darbame! Coins {cost} hir\'ifame. Haaraa: coins {remaining}',
+            'free_likers_display': '👥 Namoota {count} kan {total} irraa si jaalatan agarsiisa (fuula dursa bilisaa):',
+            'more_likers_available': '👀 Namoota {count} kan si jaalatan dabalataan jira! Hunda isaanii argachuuf ajaja /view_all_likers fayyadi yookiin gadi bu\'i coins {cost} fudhachuun.',
+            'insufficient_coins_for_likers': '❌ Jaalattoota hunda ilaaluuf coins {cost} barbaachisa. Balansii kee hin ga\'u.',
+            'viewing_all_likers': '👀 Namoota {total} hunda kan si jaalatan siif agarsiisa! (Coins {cost} hir\'ifame)',
+            'buy_coins_button': '💰 Coins bitadhu',
+            'view_all_likers_button': '👀 Jaalattoota Hunda Ilaali',
+            'coin_deduction_failed': '❌ Coins hir\'isuun hin milkoofne. Irra deebi\'i yaali.',
+            'free_coins_awarded': '🎉 Baga nagaan dhuftan! Fayyadamaa biroo ergaa erguuf jalqabuuratti coins {coins} bilisaa argatte!',
+            'coins_balance': '💰 Balansii coins kee: coins {coins}',
+            'free_messages_remaining': '📨 Ergaa bilisaa hafan: {remaining}',
+            'buy_coins_options': '💎 Paakeejii coins filadhu:',
+            'no_coins_for_likers': '❌ Jaalattoota hunda ilaaluuf coins {cost} barbaachisa. Balansii kee hin ga\'u.',
+            "welcome_back": "Baga nagaan dhuftan, {first_name}! 🎉",
+            "registration_incomplete": "Galmeessi keessan hin xumuran jira jedhutti nidanda'ama. Profaayilii keessan guutuu itti fufaa.",
+            "no_username": "Maqaa Fayyadamaa Hin Qabu",
 
             # Errors
             'error': "❌ Dogoggora",
@@ -754,10 +817,10 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'no_matches_found': "😔 ኣብ እዋን እዚ ሓድሽ ፕሮፋይላት ኣይተረኽቡን።\nተጸበዩ!",
             'action_prompt': "🔥 ጽቡቕ ፕሮፋይል! ክትሰርሑ ድሉዉ ኢኹም?",
             'no_likes_yet': "ክሳዕ ሕጂ ሰብ ኣይፈትወኩምን።\nተጸበዩ ንዝያዳ ርእይቶ ክትረኽቡ!",
-    'likes_count': "{count} ሰባት ፕሮፋይልኩም ፈቲዖምዎ!\n\nንሳቶም ክፈትዉ ከምኡ'ውን ምስማር ንምፍጣር /browse ተጠቐሙ!",
+    'likes_count': "{count} ሰባት ፕሮፋይልኩም ፈቲዖምዎ!\n\nንሳቶም ክፈትዉ ከምኡ'ውን ምስማር ንምፍጣር /search ተጠቐሙ!",
     'liker_number': "ፈታዊ #{number}",
     'someone_liked_back': "🔥 ሓደ ሰብ ፈቲዑኻ{extra_photos}! ኣገዳሲ ዲኻ?",
-    'no_matches_yet': "ክሳዕ ሕጂ ምንም ምስማር የለን።\nምስማር ንምርካብ ፕሮፋይላት ብ /browse ክትፈትዉ ጀምሩ!",
+    'no_matches_yet': "ክሳዕ ሕጂ ምንም ምስማር የለን።\nምስማር ንምርካብ ፕሮፋይላት ብ /search ክትፈትዉ ጀምሩ!",
     'matches_count': "💕 {count} ምስማር ኣለኩም!\n\n�ንዞም ዝተኻፈሉ ምስማርኩም እዮም፡",
     'match_number': "ምስማር #{number}",
     'its_a_match': "💕 ምስማር እዩ{extra_photos}! ዘመድ ክትጅምሩ ትደልዩ?",
@@ -779,7 +842,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
     'language_update_failed': "ቋንቋ ምቕያር ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።",
     
     # Coin system
-    'buy_coins': "💰 ሳንቲም ይግዙ",
+    'buy_coins': "ምርጫ ጥቕላሊ ሳንቲምኩም ሕረዩ።",
     'package_selected': "🛒 ዝተመረጠ ጥቅል፡ {package}\n\n{coins} ሳንቲም - ${price}\n\n💰 መመርዒ ክፍሊት፡\n1. ${price} በዚ መንገድ ኣልዙ፡\n   • 💳 ክሬዲት ካርድ\n   • 📱 ሞባይል ክፍሊት\n   • 🌐 ኦንላይን ምልዋይ\n\n2. ናይ ክፍሊት ኣረጋግጽ ስክሪንሾት ይውሰዱ\n3. ስክሪንሾት ኣብዚ ኣልዙ\n\nድሕሪ ምርግጋጽ፡ ሳንቲም ኣብ 24 ሰዓታት ናብ ኣካውንትኹም ኪወሃብ እዩ።",
     'payment_screenshot_received': "✅ ናይ ክፍሊት ስክሪንሾት ተቐቢሉ!\n\nክፍሊትኹም ኣብ ትሕዝቶ እዩ። ክጸንሐ ከሎ ንነግርኩም።\n\n⏳ ግዜ ምጽዓን፡ ብመብዛሕትኡ 24 ሰዓታት\n📞 ሓገዝ፡ ሕቶ እንተለኩም @admin ተራኸቡ",
     'invalid_screenshot': "በጃኹም ናይ ክፍሊት ኣረጋግጽ ስክሪንሾት ኣልዙ።\n\nጸገም እንተለኩም፡ @admin ተራኸቡ።",
@@ -789,11 +852,11 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
     'admin_only': "❌ ናይ ኣስተዳደሪ ትእዛዝ ጥራይ።",
     'addcoins_usage': "ኣጠቓቕማ፡ /addcoins <ተጠቃሚ መለይ> <ብዝሒ ሳንቲም> [ምኽንያት]",
     'user_not_found': "❌ ተጠቃሚ ኣይተረኽበን።",
-    'coins_added_success': "✅ ሳንቲም ብትኽክል ተወሲኑ!\n\nተጠቃሚ፡ {first_name} (መለይ፡ {user_id})\nሳንቲም ተወሲኑ፡ {amount}\nሓድሽ ሚዛን፡ {balance} ሳንቲም\nምኽንያት፡ {reason}",
+    'coins_added_success': "✅ ሳንቲም ብትኽክል ተወሲኑ!\n\nተጠቃሚ፡ {first_name} (መለይ፡ {user_id})\nሳንቲም ተወሲኑ፡ {amount}\nሓድሽ balance፡ {balance} ሳንቲም\nምኽንያት፡ {reason}",
     'coins_added_failed': "❌ ሳንቲም ምውሳን ኣይተኻእለን።",
     'invalid_user_id': "❌ ዘይቅኑዕ ተጠቃሚ መለይ ወይ ብዝሒ ሳንቲም። ኣጠቓቕማ፡ /addcoins <ተጠቃሚ መለይ> <ብዝሒ ሳንቲም> [ምኽንያት]",
-    'coins_added_user_notification': "🎉 ሳንቲም ናብ ኣካውንትኹም ተወሲኑ!\n\nሳንቲም {amount} ናብ ኣካውንትኹም ተወሲኑ።\n\n💰 ሓድሽ ሚዛን፡ {balance} ሳንቲም\n\nምኽንያት፡ {reason}",
-    'payment_approved_user': "🎉 ክፍሊት ተፅዕኖ ተዋሂቡ!\n\nሳንቲም {amount} ናብ ኣካውንትኹም ተወሲኑ!\n\n💰 ሓድሽ ሚዛን፡ {balance} ሳንቲም\n\n�ንግዝኻ ኣመስግና ኢና! 🎊",
+    'coins_added_user_notification': "🎉 ሳንቲም ናብ ኣካውንትኹም ተወሲኑ!\n\nሳንቲም {amount} ናብ ኣካውንትኹም ተወሲኑ።\n\n💰 ሓድሽ balance፡ {balance} ሳንቲም\n\nምኽንያት፡ {reason}",
+    'payment_approved_user': "🎉 ክፍሊት ተፅዕኖ ተዋሂቡ!\n\nሳንቲም {amount} ናብ ኣካውንትኹም ተወሲኑ!\n\n💰 ሓድሽ balance፡ {balance} ሳንቲም\n\n�ንግዝኻ ኣመስግና ኢና! 🎊",
     'payment_rejected_user': "❌ ክፍሊት ኣይተቐበለን\n\nክፍሊትኩም ኣይተቐበለን። ዝያዳ ሓበሬታ ንምርካብ @admin ተራኸቡ።\n\nጌጋ ኮይኑ እንተሓሰብኩም፡ ዝኸውን ሓበሬታ ናብ ሓገዝ ኣቕርቡ።",
     'no_pending_payments': "✅ ዝጸበቡ ክፍልታት የለን።",
     'pending_payments_count': "📋 ዝጸበቡ ክፍልታት፡ {count}",
@@ -816,29 +879,28 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
 🤖 ኢትዮጵያ ኮንንት ቦት - መምርሒ ትእዛዝ
 
 🔍 ምድላይ ከምኡ'ውን ምስማር፡
-• `/browse` - ሓድሽ ፕሮፋይላት ድለዩ
-• `/likes` - ፕሮፋይልኩም ዝፈትዉ ሰባት ርአዩ  
-• `/matches` - ዝተካፈለ ምስማርኩም ርአዩ
+• /search - ሓድሽ ፕሮፋይላት ድለዩ
+• /likers - ፕሮፋይልኩም ዝፈትዉ ሰባት ርአዩ  
+• /matches - ዝተካፈለ ምስማርኩም ርአዩ
 
 👤 ምምሕዳር ፕሮፋይል፡
-• `/profile` - ፕሮፋይልኩም ርአዩ
-• `/language` - ቋንቋ ቦት ቀይሩ
+• /profile - ፕሮፋይልኩም ርአዩ
+• /language - ቋንቋ ቦት ቀይሩ
 
 💰 ፕሪሚየም ባህርያት፡
-• `/buycoins` - ንፕሪሚየም ባህርያት ሳንቲም ይግዙ
+• /buycoins - ንፕሪሚየም ባህርያት ሳንቲም ይግዙ
 
 🛡️ ጸጥታ ከምኡ'ውን ሓገዝ፡
-• `/complain` - ጸገማት ሪፖርት ግበሩ ወይ ርእይቶ ኣልዩ
-• `/deleteaccount` - ኣካውንትኩም ሰርዩ
+• /complaint - ጸገማት ሪፖርት ግበሩ ወይ ርእይቶ ኣልዩ
+• /deleteaccount - ኣካውንትኩም ሰርዩ
 
 💌 መልእኽቲ ምልኣኽ፡
 • ፕሮፋይላት ምስ ዝድለዩ መልእኽቲ ንምልኣኽ ኢንላይን ቁልፍ ተጠቐሙ
 
 🛠 ናይ ስራሕ ትእዛዝ፡
-• `/help` - እዚ መምርሒ መልእኽቲ ኣርእዩ
-• `/cancel` - ናይ ሕጂ ስራሕ ቁረጹ
+• /help - እዚ መምርሒ መልእኽቲ ኣርእዩ
+• /cancel - ናይ ሕጂ ስራሕ ቁረጹ
 
-💡 ምኽር፡ ንመበገሲ ባህርያት ቅልጡፍ መድረሽ ንምርካብ ናይ ምናሌ ቁልፍ ተጠቐሙ!
     """,
     
     # Complaint types
@@ -863,7 +925,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'profile_language': "🗣️ {profile_language}  |  🌍 {city}",
             'profile_city_not_specified': "ዘይተገልጸ",
             'profile_religion_not_specified': "ዘይተገልጸ",
-            'profile_balance': "💰 ሚዛን፡ {coins} ሳንቲም",
+            'profile_balance': "💰 balance፡ {coins} ሳንቲም",
             
             # Stats formatting (keep emojis as requested)
             'profile_stats': "❤️ Likes: {likes}   🤝 Matches: {matches}",
@@ -873,6 +935,27 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'likes_list_header': "❤️ ፕሮፋይልኩም ዝፈትዉ ተጠቃሚታት፡\n\n",
             'no_matches_yet_list': "ክሳዕ ሕጂ ምንም ምስማር የለን።",
             'matches_list_header': "💕 ዝተካፈሉ ምስማርኩም፡\n\n",
+            'max_photos_reached': '❌ ውሕድ 2 ስእልታት በጽሒፍካ። ምዝገባኻ ብስእልታትኻ ተወዲኡ ኣሎ።',
+            'one_photo_added': '✅ 1 ስእሊ ናብ መግለጺኻ ተወሲኑ',
+            'two_photos_added': '✅ 2 ስእልታት ናብ መግለጺኻ ተወሲኑ',
+            'insufficient_coins_for_message': '❌ መልእኽቲ ንምልኣኽ {cost} ሳንቲም የድሊ። እኹል balance የብልካን።',
+            'message_sent_free_remaining': '✅ መልእኽቲ ተልኢሉ! {remaining} ነፃ መልእኽታት ይተርፍልካ።',
+            'message_sent_coins_deducted': '✅ መልእኽቲ ተልኢሉ! {cost} ሳንቲም ተቐንጢጡ። ዝተረፈ: {remaining} ሳንቲም',
+            'free_likers_display': '👥 ካብ {total} ሰባት {count} ሰባት እተፈትዉካ የርኢኻ (ነፃ ናይ ቅድሚ ምርኣይ):',
+            'more_likers_available': '👀 {count} ካልኦት ሰባት እተፈትዉካ ኣሎዉ! ንኹሎም ንምርኣይ ኣኼባ /view_all_likers ትጥቀም ወይ ኣብ ታሕቲ ጠውቕ ብ{cost} ሳንቲም።',
+            'insufficient_coins_for_likers': '❌ ኩሎም እተፈትዉካ ንምርኣይ {cost} ሳንቲም የድሊ። እኹል balance የብልካን።',
+            'viewing_all_likers': '👀 ኩሎም {total} ሰባት እተፈትዉካ የርኢኻ! ({cost} ሳንቲም ተቐንጢጡ)',
+            'buy_coins_button': '💰 ሳንቲም ይግዛ',
+            'view_all_likers_button': '👀 ኩሎም እተፈትዉካ ርኣይ',
+            'coin_deduction_failed': '❌ ሳንቲም ምቁራጽ ኣይተኻኽለን። በጃኻ ደጊምካ ፈትን።',
+            'free_coins_awarded': '🎉 እንቋዕ ብድሓን መጻእኩም! ንኻልኦት ተጠቃምቲ መልእኽቲ ንምልኣኽ ንኺትጅምሩ {coins} ነፃ ሳንቲም ተዋህበኩም!',
+            'coins_balance': '💰 balance ሳንቲምካ: {coins} ሳንቲም',
+            'free_messages_remaining': '📨 ዝተረፈ ነፃ መልእኽቲ: {remaining}',
+            'buy_coins_options': '💎 ጥቅሊ ሳንቲም ምረጽ:',
+            'no_coins_for_likers': '❌ ኩሎም እተፈትዉካ ንምርኣይ {cost} ሳንቲም የድሊ። እኹል ሚዛን የብልካን።',
+            "welcome_back": "እንቋዕ ብደሓን መጻእኩም፣ {first_name}! 🎉",
+            "registration_incomplete": "ምዝገባኹም ከምዘይተወዳደረ ይመስል። ናብርና መግለጺ ናትኩም ንወድእዎ።",
+            "no_username": "የሎ ተጠቃሚ ስም",
             
             # Errors
             'error': "❌ ጌጋ",

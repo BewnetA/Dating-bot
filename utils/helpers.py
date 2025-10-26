@@ -63,27 +63,36 @@ def format_profile_safe(user_data: dict, language: str = 'english') -> str:
     
     return profile_text
 
-def format_profile_html(user_data: dict, language: str = 'english') -> str:  # ✅ ADD LANGUAGE PARAMETER
-    """Format user profile using HTML formatting (safer alternative)"""
+def format_profile_html(user_data: dict, language: str = 'english') -> str:
+    """Format user profile using HTML formatting for profile browsing view"""
+    from database import db  # Import here to avoid circular imports
+    
     first_name = html.escape(user_data.get('first_name', get_text('profile_unknown', language)))
     age = html.escape(str(user_data.get('age', ''))) if user_data.get('age') else ''
-    city = html.escape(user_data.get('city', get_text('profile_city_not_specified', language))) if user_data.get('city') else ''
-    religion = html.escape(user_data.get('religion', get_text('profile_religion_not_specified', language))) if user_data.get('religion') else ''
-    bio = html.escape(user_data.get('bio', '')) if user_data.get('bio') else ''
     
-    profile_text = f"👤 <b>{first_name}</b>"
-    
+    # Start with name and age
+    profile_text = f"{first_name}"
     if age:
-        profile_text += f", {age}"
+        profile_text += f" ({age})"
+    profile_text += "\n\n"
     
+    # Location
+    city = user_data.get('city', get_text('profile_city_not_specified', language))
     if city:
-        profile_text += f"\n📍 {city}"
+        profile_text += f"🌍 {city}\n"
     
+    # Religion
+    religion = user_data.get('religion', get_text('profile_religion_not_specified', language))
     if religion:
-        profile_text += f"\n🙏 {religion}"
+        profile_text += f"{religion}\n"
     
+    # Bio
+    bio = user_data.get('bio', '')
     if bio:
-        profile_text += f"\n\n📝 {bio}"
+        profile_text += f"\n{bio}\n"
+    
+    # Last seen (you can customize this based on your Telegram integration)
+    profile_text += f"\nLast seen recently"
     
     return profile_text
 

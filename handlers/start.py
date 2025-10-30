@@ -9,7 +9,7 @@ from aiogram.fsm.context import FSMContext
 from utils.helpers import save_photos
 from database import db
 from config import config
-from handlers.matching import browse_profiles
+from handlers.matching import browse_profiles, show_browse_profiles
 from keyboards.reply import *
 from keyboards.inline import *
 from utils.helpers import user_state
@@ -380,6 +380,6 @@ async def complete_registration(message: Message, state: FSMContext, photos: lis
         await state.clear()
         
         # Redirect to browse profiles
-        await browse_profiles(message)
+        await show_browse_profiles(message,user_id)
     else:
         await message.answer(get_text('photos_save_error', user_lang))

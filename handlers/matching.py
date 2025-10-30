@@ -26,6 +26,52 @@ class MessageStates(StatesGroup):
     waiting_for_message = State()
     waiting_for_media_message = State()  # For non-text messages
 
+# Reusable function to show browse profiles that can be called from complete registration function
+async def show_browse_profiles(message: Message, user_id: int = None):
+    """Reusable function to show browse profiles"""
+    if user_id is None:
+        user_id = message.from_user.id
+        
+    user_lang = get_user_language(user_id, db)
+    user_data = db.get_user(user_id)
+    
+    if not user_data:
+        await message.answer(get_text('incomplete_registration', user_lang))
+        return False
+    
+    if not user_data.get('photos'):
+        await message.answer(get_text('no_photos_profile', user_lang))
+        return False
+    
+    if not user_data.get('gender'):
+        await message.answer(get_text('incomplete_profile', user_lang))
+        return False
+    
+    # Get potential matches
+    matches = db.get_users_for_matching(user_id, user_data['gender'])
+        
+    if not isinstance(matches, list):
+        await message.answer("❌ Error: Could not load matches")
+        return False
+    
+    if not matches:
+        await message.answer(get_text('no_matches_found', user_lang))
+        return False
+    
+    # ✅ Now shuffle the actual list
+    rd.shuffle(matches)
+    
+    user_state.update_data(
+        user_id,
+        {
+            "current_matches": matches,
+            "current_index": 0
+        }
+    )
+    
+    # Show first match
+    await show_next_profile(message, matches, 0)
+    return True
 
 @router.message(F.text == "🔍 Find Matches")
 @router.message(Command("search"))

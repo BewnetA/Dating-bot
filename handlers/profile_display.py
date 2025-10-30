@@ -208,9 +208,6 @@ async def browse_profiles_for_user(callback: CallbackQuery, user_id: int):
     user_lang = get_user_language(user_id, db)
     user_data = db.get_user(user_id)
     
-    print(f"DEBUG: browse_profiles_for_user - User ID: {user_id}")
-    print(f"DEBUG: User data: {user_data}")
-    
     if not user_data:
         await callback.message.answer(get_text('incomplete_registration', user_lang))
         return

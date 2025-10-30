@@ -32,7 +32,7 @@ class Config:
         'message_cost': 2,           # Coins per message
         'free_messages': 5,          # Free messages for new users
         'view_all_likers_cost': 10,  # Coins to see all likers
-        'free_likers_display': 1,    # Free likers to display
+        'free_likers_display': 0,    # Free likers to display
     }
 
 config = Config()

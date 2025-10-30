@@ -10,7 +10,7 @@ def get_language_keyboard():
     keyboard.add(KeyboardButton(text="🇬🇧 English"))
     keyboard.add(KeyboardButton(text="🇪🇹 Amharic"))
     keyboard.add(KeyboardButton(text="🇪🇹 Affan Oromo"))
-    keyboard.add(KeyboardButton(text="🇪🇹 Tigrinya"))
+    keyboard.add(KeyboardButton(text="🇪🇹 Tigrigna"))
     keyboard.adjust(2)
     return keyboard.as_markup(resize_keyboard=True)
 

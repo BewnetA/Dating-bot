@@ -70,19 +70,19 @@ def get_cancel_payment_keyboard():
     keyboard.add(InlineKeyboardButton(text="❌ Cancel Payment", callback_data="cancel_payment"))
     return keyboard.as_markup()
 
-def get_view_all_likers_keyboard(language: str):
-    """Keyboard for viewing all likers"""
+# def get_view_all_likers_keyboard(language: str):
+#     """Keyboard for viewing all likers"""
     
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=get_text('view_all_likers_button', language),
-                    callback_data="view_all_likers"
-                )
-            ]
-        ]
-    )
+#     return InlineKeyboardMarkup(
+#         inline_keyboard=[
+#             [
+#                 InlineKeyboardButton(
+#                     text=get_text('view_all_likers_button', language),
+#                     callback_data="view_all_likers"
+#                 )
+#             ]
+#         ]
+#     )
 
 def get_find_new_people_keyboard(language: str):
     """Keyboard for finding new people"""

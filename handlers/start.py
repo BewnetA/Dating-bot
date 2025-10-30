@@ -287,64 +287,75 @@ async def process_photos(message: Message, state: FSMContext):
         return
     
     # STRICTLY limit to maximum 2 photos
-    if len(photos) >= 2:
+    if len(photos) >= config.MAX_PHOTOS:
         await message.answer(get_text('max_photos_reached', user_lang))
         return
         
     photos.append(photo_file_id)
     await state.update_data(photos=photos)
     
-    # Cancel existing timer if any
-    current_timer = user_data.get('photo_timer')
-    if current_timer and not current_timer.done():
-        current_timer.cancel()
-    
     # If first photo, start timer for second photo
-    if len(photos) == 1:
-        # Create timer task specifically for this user
-        timer = asyncio.create_task(photo_timer_handler(user_id, message, state, user_lang))
-        await state.update_data(photo_timer=timer, registration_completed=False)
+    if len(photos) >= 1:
+        
+        # Create timer task specifically for this user (2 seconds)
+        timer_task = asyncio.create_task(photo_timer_handler(user_id, message, state, user_lang))
+        
+        # Store timer reference in state data
+        await state.update_data(
+            photo_timer_started=True,
+            registration_completed=False
+        )
+        
+        # Store the task in a global dictionary as backup
+        # But primarily rely on the timer logic within the task itself
+        if 'photo_timers' not in globals():
+            globals()['photo_timers'] = {}
+        globals()['photo_timers'][user_id] = timer_task
     
-    # If second photo received, complete registration immediately
-    elif len(photos) == 2:
-        await complete_registration(message, state, photos, user_lang)
 
 async def photo_timer_handler(user_id: int, message: Message, state: FSMContext, user_lang: str):
-    """Handle the timer for waiting for second photo"""
+    """Handle the timer for waiting for second photo - wait 2 seconds"""
     try:
-        # Wait for specified time
-        await asyncio.sleep(3)
+        # Wait for 2 seconds
+        await asyncio.sleep(2)
         
-        # Re-check the current state data to ensure it's still valid
+        # Check if we still need to complete registration
         current_data = await state.get_data()
         current_photos = current_data.get('photos', [])
         
-        # Only complete registration if we still have exactly 1 photo and not completed
-        if (len(current_photos) == 1 and 
-            not current_data.get('registration_completed', False) and
-            not current_data.get('photo_timer_cancelled', False)):
-            
+        # Only proceed if we still have exactly 1 photo and registration not completed
+        if len(current_photos) == 1 and not current_data.get('registration_completed', False):
             await complete_registration(message, state, current_photos, user_lang)
             
     except asyncio.CancelledError:
         # Timer was cancelled because second photo was received
-        await state.update_data(photo_timer_cancelled=True)
+        print(f"photo_timer_handler: Timer cancelled for user {user_id} - second photo not received")
         pass
     except Exception as e:
         logging.error(f"Timer error for user {user_id}: {e}")
+    finally:
+        # Clean up the global timer reference
+        if 'photo_timers' in globals() and user_id in globals()['photo_timers']:
+            del globals()['photo_timers'][user_id]
 
 async def complete_registration(message: Message, state: FSMContext, photos: list, user_lang: str):
     """Complete the registration process"""
     user_id = message.from_user.id
     
-    # Mark registration as completed to prevent duplicate completion
+    # Check if already completed to prevent duplicate execution
+    user_data = await state.get_data()
+    if user_data.get('registration_completed'):
+        return
+        
+    # Mark registration as completed
     await state.update_data(registration_completed=True)
     
-    # Clean up timer if exists
-    user_data = await state.get_data()
-    timer = user_data.get('photo_timer')
-    if timer and not timer.done():
-        timer.cancel()
+    # Clean up global timer if exists
+    if 'photo_timers' in globals() and user_id in globals()['photo_timers']:
+        timer_task = globals()['photo_timers'][user_id]
+        if not timer_task.done():
+            timer_task.cancel()
+        del globals()['photo_timers'][user_id]
     
     # Save photos to database
     photos_str = save_photos(photos)
@@ -354,10 +365,14 @@ async def complete_registration(message: Message, state: FSMContext, photos: lis
         # Award free coins
         free_coins = config.COIN_CONFIG['message_cost'] * config.COIN_CONFIG['free_messages']
         db.add_user_coins(user_id, free_coins)
+        
+        # Get the user's registered name from database
+        user = db.get_user(user_id)
+        registered_name = user.get('first_name', 'User')  # Fallback to 'User' if not found
             
         await message.answer(
             f"{get_text('registration_complete', user_lang)}\n"
-            f"{get_text('free_conis_awarded', user_lang, coins=free_coins)}",
+            f"{get_text('free_conis_awarded', user_lang, first_name=registered_name, coins=free_coins)}",
             reply_markup=remove_keyboard
         )
         

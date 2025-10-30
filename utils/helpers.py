@@ -36,7 +36,7 @@ def format_profile_safe(user_data: dict, language: str = 'english') -> str:
     profile_text += get_text('profile_language', language, profile_language=user_language, city=city) + "\n\n"
     
     # Religion
-    religion = user_data.get('religion', get_text('profile_religion_not_specified', language))
+    religion = "🙏" + user_data.get('religion', get_text('profile_religion_not_specified', language))
     profile_text += f"{religion}\n\n"
     
     # Bio
@@ -79,10 +79,10 @@ def format_profile_html(user_data: dict, language: str = 'english') -> str:
     # Location
     city = user_data.get('city', get_text('profile_city_not_specified', language))
     if city:
-        profile_text += f"🌍 {city}\n"
+        profile_text += f"🌍 {city}\n\n"
     
     # Religion
-    religion = user_data.get('religion', get_text('profile_religion_not_specified', language))
+    religion = "🙏"+user_data.get('religion', get_text('profile_religion_not_specified', language))
     if religion:
         profile_text += f"{religion}\n"
     

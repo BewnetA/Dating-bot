@@ -84,6 +84,8 @@ class Database:
                 from_user_id BIGINT,
                 to_user_id BIGINT,
                 message_text TEXT,
+                message_type VARCHAR(20) DEFAULT 'text',
+                media_file_id TEXT,
                 is_read BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (from_user_id) REFERENCES users (user_id) ON DELETE CASCADE,
@@ -237,14 +239,15 @@ class Database:
         finally:
             cursor.close()
     
-    def add_message(self, from_user_id: int, to_user_id: int, message_text: str) -> bool:
-        """Add a message between users"""
+    def add_message(self, from_user_id: int, to_user_id: int, message_content: str, message_type: str = "text", media_file_id: str = None):
+        """Add message to database with type and media file ID support"""
         cursor = self.conn.cursor()
+        query = """
+        INSERT INTO messages (from_user_id, to_user_id, message_text, message_type, media_file_id, created_at)
+        VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+        """
         try:
-            cursor.execute('''
-                INSERT INTO messages (from_user_id, to_user_id, message_text)
-                VALUES (%s, %s, %s)
-            ''', (from_user_id, to_user_id, message_text))
+            cursor.execute(query, (from_user_id, to_user_id, message_content, message_type, media_file_id))
             self.conn.commit()
             return True
         except Exception as e:

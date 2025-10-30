@@ -13,7 +13,6 @@ from keyboards.inline import (
     get_profile_actions_keyboard,
     get_confirm_delete_keyboard, 
     get_coin_packages_keyboard,
-    get_view_all_likers_keyboard,
 )
 from utils.helpers import format_profile_html, format_profile_safe, parse_photos, user_state
 from utils.translations import get_text, get_user_language  # ✅ ADD THIS IMPORT
@@ -49,15 +48,31 @@ async def who_liked_me(message: Message):
     
     if not likes:
         await message.answer(
-            get_text('no_likes_yet', user_lang),      reply_markup=get_find_new_people_keyboard(user_lang)
+            get_text('no_likes_yet', user_lang),
+            reply_markup=get_find_new_people_keyboard(user_lang)
         )
         return
     
-    # Start a viewing session with the likes
-    await start_profile_session(user_id, likes, "likes")
+    # Show total count
+    await message.answer(get_text('likes_count', user_lang, count=len(likes)))
     
-    # Show first profile
-    await show_profile_by_index(message, user_id, 0)
+    # Show only free likers (first 3)
+    free_likers = likes[:config.COIN_CONFIG['free_likers_display']]
+    
+    if free_likers:
+        
+        # Display the free likers with VIEW buttons (not like/skip)
+        for i, user in enumerate(free_likers):
+            await display_liker_profile(message, user, i+1, user_lang)
+    
+    # If there are more likers, show premium option
+    if len(likes) > config.COIN_CONFIG['free_likers_display']:
+        remaining_count = len(likes) - config.COIN_CONFIG['free_likers_display']
+        await message.answer(
+            get_text('more_likers_available', user_lang, 
+                    count=remaining_count, cost=config.COIN_CONFIG['view_all_likers_cost']),
+            reply_markup=remove_keyboard
+        )
 
 @router.callback_query(F.data == "find_matches_from_likes")
 async def find_matches_from_likes(callback: CallbackQuery):
@@ -65,12 +80,8 @@ async def find_matches_from_likes(callback: CallbackQuery):
     user_id = callback.from_user.id
     user_lang = get_user_language(user_id, db)
     
-    print(f"DEBUG: find_matches_from_likes - User ID: {user_id}")
-    print(f"DEBUG: Callback message chat ID: {callback.message.chat.id}")
-    
     # Check if user is properly registered
     user_data = db.get_user(user_id)
-    print(f"DEBUG: User data from DB: {user_data}")
     
     if not user_data:
         await callback.answer(get_text('incomplete_registration', user_lang), show_alert=True)
@@ -161,9 +172,6 @@ async def view_all_likers(message: Message):
     
     # Deduct coins
     if db.deduct_user_coins(user_id, cost):
-        await message.answer(
-            get_text('viewing_all_likers', user_lang, cost=cost, total=len(unseen_likers))
-        )
         
         # Display only unseen likers with correct numbering
         for i, user in enumerate(unseen_likers):
@@ -247,9 +255,9 @@ async def my_matches(message: Message):
 # ============================================================================
 
 # Complain Command - Simple Number-based Menu
-@router.message(Command("complaint"))
 @router.message(Command("report"))
-async def complain_command(message: Message, state: FSMContext):
+@router.message(Command("complaint"))
+async def complaint_command(message: Message, state: FSMContext):
     """Handle /complain command with number-based menu"""
     user_lang = get_user_language(message.from_user.id, db)  # ✅ GET USER LANGUAGE
     
@@ -364,7 +372,8 @@ async def language_command(message: Message):
     language_names = {
         'english': get_text('language_english', user_lang),
         'amharic': get_text('language_amharic', user_lang),
-        'oromo': get_text('language_oromo', user_lang)
+        'oromo': get_text('language_oromo', user_lang),
+        'tigrigna': get_text('language_tigrigna', user_lang)
     }
     
     current_lang_name = language_names.get(current_language, 'English')

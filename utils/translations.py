@@ -4,7 +4,7 @@ def get_user_language(user_id: int, db) -> str:
     """Get user's preferred language from database"""
     user_data = db.get_user(user_id)
     return user_data.get('language', 'english') if user_data else 'english'
-"admin_new_user"
+"free_conis_awarded"
 def get_text(key: str, language: str = 'english', **kwargs) -> str:
     """Get translated text for a given key and language"""
     translations = {
@@ -45,7 +45,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             
             # Other features
             'complaint_success': "✅ Complaint submitted!",
-            'language_updated': "✅ Language updated to {language}",
+            'language_updated': "✅ Language updated to {profile_language}",
             'screenshot_received': "✅ Payment received! Under review.",
             'account_deleted': "✅ Account deleted!",
             'cancel': "❌ Cancel",
@@ -104,7 +104,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'no_matches_found': "😔 No new profiles found at the moment.\nCheck back later for new matches!",
             'action_prompt': "🔥 Nice profile! Ready to make a move?",
             'no_likes_yet': "No one has liked your profile yet.\nKeep browsing to get more visibility!",
-            'likes_count': "{count} people liked your profile!\n\nUse /search to like them back and create matches!",
             'liker_number': "Liker #{number}",
             'someone_liked_back': "🔥 Someone liked you back{extra_photos}! Interested?",
             'no_matches_yet': "You don't have any matches yet.\nStart liking profiles with /search to get matches!",
@@ -125,7 +124,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             
             # Language settings
             'language_settings': "🌐 Language Settings\n\nCurrent language: {current_lang}\n\nSelect your preferred language:",
-            'language_updated': "✅ Language Updated!\n\nYour language has been set to: {language}\n\nThe bot will now use this language for all interactions.",
             'language_update_failed': "Failed to update language. Please try again.",
             
             # Coin system
@@ -220,7 +218,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             # Lists formatting
             'no_likes_yet_list': "No likes yet.",
             'likes_list_header': "❤️ Users who liked your profile:\n\n",
-            'no_matches_yet_list': "No matches yet.", 
             'matches_list_header': "💕 Your mutual matches:\n\n",
             'max_photos_reached': '❌ Maximum of 2 photos reached. Registration completed with your photos.',
             'one_photo_added': '✅ 1 photo added to your profile',
@@ -229,21 +226,22 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'insufficient_coins_for_message': '❌ You need {cost} coins to send a message. You have insufficient balance.',
             'message_sent_free_remaining': '✅ Message sent! You have {remaining} free messages remaining.',
             'message_sent_coins_deducted': '✅ Message sent! {cost} coins deducted. Remaining: {remaining} coins',
-            'free_likers_display': '👥 Showing {count} of {total} people who liked you (free preview):',
-            'more_likers_available': '👀 There are {count} more people who liked you! Use /view_all_likers command or click below to see all of them for {cost} coins.',
+            'more_likers_available': '👀 Use /view_all_likers command to see all of them for {cost} coins.',
             'insufficient_coins_for_likers': '❌ You need {cost} coins to view all likers. You have insufficient balance.',
-            'viewing_all_likers': '👀 Showing all {total} people who liked you! ({cost} coins deducted)',
             'buy_coins_button': '💰 Buy Coins',
             'view_all_likers_button': '👀 View All Likers',
             'coin_deduction_failed': '❌ Failed to deduct coins. Please try again.',
-            'free_conis_awarded': '🎉 Welcome! You received {coins} free coins to start messaging other users!',
+            'free_conis_awarded': '🎉 Welcome {first_name}! You received {coins} free coins to start messaging other users!',
             'coins_balance': '💰 Your coin balance: {coins} coins',
             'free_messages_remaining': '📨 Free messages remaining: {remaining}',
             'buy_coins_options': '💎 Choose a coin package:',
             'no_coins_for_likers': '❌ You need {cost} coins to view all likers. You have insufficient balance.',
             "welcome_back": "Welcome back, {first_name}! 🎉",
-  "registration_incomplete": "It looks like you haven't completed your registration yet. Let's finish setting up your profile.",
-  "no_username": "NoUsername",
+            "registration_incomplete": "It looks like you haven't completed your registration yet. Let's finish setting up your profile.",
+            "no_username": "NoUsername",
+            'new_message_from': "📩 New message from {first_name} ({age})",
+            'unsupported_message_type': "❌ This message type is not supported",
+            'find_new_people': "🔍 Find New People",
 
 
             # Errors
@@ -268,13 +266,13 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'registration_complete': "✅ ምዝገባ ተጠናቅቋል! 🎉",
             
             # Main menu
-            'find_matches': "🔍 ማጣጣሚያዎችን ፈልግ",
+            'find_matches': "🔍 ወዳጅ ፈልግ",
             'my_profile': "👤 የእኔ መገለጫ", 
             'my_messages': "💌 መልዕክቶቼ",
             
             # Matching
-            'no_matches': "😔 ምንም መገለጫ አልተገኘም። ቆይተው ይመልከቱ!",
-            'all_profiles_seen': "🎉 ሁሉንም መገለጫዎች አይተዋል!",
+            'no_matches': "😔 ምንም ወዳጅ አልተገኘም። ቆይተው ይመልከቱ!",
+            'all_profiles_seen': "🎉 ሁሉንም አካውንቶች አይተዋል!",
             'nice_profile': "🔥 ጥሩ መገለጫ! ለመስራት ዝግጁ ነዎት?",
             'like': "❤️ አብዝተህ",
             'message': "💌 መልዕክት",
@@ -283,12 +281,12 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             # Profile commands
             'no_likes': "😔 እስካሁን ማንም አላብዝቶህም።",
             'likes_count': "❤️ {count} ሰዎች አብዝተውሃል!",
-            'no_matches_cmd': "💔 እስካሁን ማጣጣሚያ የሎትም።",
-            'matches_count': "💕 {count} ማጣጣሚያዎች አሎት!",
+            'no_matches_cmd': "💔 እስካሁን ወዳጅ የሎትም።",
+            'matches_count': "💕 {count} ወዳጆች አሎት!",
             
             # Other features
             'complaint_success': "✅ ቅሬታዎ ቀርቧል!",
-            'language_updated': "✅ ቋንቋዎ ወደ {language} ተቀይሯል",
+            'language_updated': "✅ ቋንቋዎ ወደ {profile_language} ተቀይሯል",
             'screenshot_received': "✅ ክፍያዎ ተቀብሏል! በግምገማ ላይ።",
             'account_deleted': "✅ መለያዎ ተሰርዟል!",
             'cancel': "❌ ሰርዝ",
@@ -307,15 +305,15 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'bio_prompt': "እባክዎ ስለ ራስዎ ትንሽ ይንገሩን (ፍላጎቶችዎ፣ የግዴታ እንቅስቃሴዎችዎ፣ ወዘተ.):",
             'photos_prompt': "እባክዎ ቢያንስ ሁለት ግልጽ የሆኑ ፎቶዎችዎን ይስቀሉ",
             'duplicate_photo': "ይህን ፎቶ አስቀድመው ሰቅለዋል። እባክዎ ሌላ ፎቶ ይስቀሉ።",
-            'photo_added': "ፎቶው ወደ መገለጫዎ ተጨምሯል!",
+            'photo_added': "ፎቶው ወደ አካውንቶ ተጨምሯል!",
             'photos_save_error': "ፎቶዎችዎን ማስቀመጥ አልተቻለም። እባክዎ እንደገና ይሞክሩ።",
             'registration_success': "አሁን ማጣጣሚያዎችን ማግኘት እና ሰዎችን መገናኘት ይችላሉ።",
             'incomplete_registration': "እባክዎ መጀመሪያ ምዝገባዎን በ /start ይጨርሱ",
-            'no_photos_profile': "እባክዎ መጀመሪያ መገለጫዎን ይጨርሱ እና ፎቶዎችዎን ይጨምሩ",
-            'incomplete_profile': "እባክዎ መጀመሪያ መገለጫዎን ያጠናቅቁ",
-            'fetching_matches': "🔄 አዳዲስ ማጣጣሚያዎች ለእርስዎ በማግኘት ላይ...",
-            'no_fresh_matches': "😔 አዳዲስ መገለጫዎች አሁንም የሉም። ቆይተው ይመልከቱ!",
-            'profile_setup_required': "❌ እባክዎ መገለጫዎን ያጠናቅቁ",
+            'no_photos_profile': "እባክዎ መጀመሪያ ላይክ ይጨርሱ እና ፎቶዎችዎን ይጨምሩ",
+            'incomplete_profile': "እባክዎ መጀመሪያ ላይክ ያጠናቅቁ",
+            'fetching_matches': "🔄 አዳዲስ ወዳጆች ለእርስዎ በማግኘት ላይ...",
+            'no_fresh_matches': "😔 አዳዲስ ወዳጆች አሁንም የሉም። ቆይተው ይመልከቱ!",
+            'profile_setup_required': "❌ እባክዎ ላይክ ያጠናቅቁ",
             'like_sent': "❤️ አብዝተህ!",
             'already_liked': "ይህን መገለጫ አስቀድመው አብዝተውታል!",
             'skipped': "⏭️ አልፍ",
@@ -339,20 +337,19 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'unknown_user': "ተጠቃሚ",
             
             # Additional matching texts
-            'all_profiles_seen': "🎉 ሁሉንም የሚገኙ መገለጫዎች አይተዋል!\nለአዳዲስ ማጣጣሚያዎች ቆይተው ይመልከቱ።",
-            'no_matches_found': "😔 በአሁኑ ጊዜ ምንም አዳዲስ መገለጫዎች አልተገኙም።\nቆይተው ይመልከቱ!",
+            'all_profiles_seen': "🎉 ሁሉንም የሚገኙ አካውንቶች አይተዋል!\nለአዳዲስ ማጣጣሚያዎች ቆይተው ይመልከቱ።",
+            'no_matches_found': "😔 በአሁኑ ጊዜ ምንም አዳዲስ ወዳጆች አልተገኙም።\nቆይተው ይመልከቱ!",
             'action_prompt': "🔥 ጥሩ መገለጫ! ለመስራት ዝግጁ ነዎት?",
-            'no_likes_yet': "እስካሁን ማንም መገለጫዎን አላብዝተም።\nተጨማሪ እይታ ለማግኘት መሰረም ይቀጥሉ!",
-            'likes_count': "{count} ሰዎች መገለጫዎን አብዝተዋል!\n\nእነሱን ለማብዛት እና ማጣጣሚያዎችን ለመፍጠር /search ይጠቀሙ!",
-            'liker_number': "አብዝተኛ #{number}",
+            'no_likes_yet': "እርስዎን ላይክ ያደረገ አዲስ ሰው የለም እባክዎ ቆይተው እንደገና ይሞክሩ።",
+            'liker_number': "ላይከር #{number}",
             'someone_liked_back': "🔥 ማንም አብዝቶሃል{extra_photos}! ፍላጎት አሎት?",
-            'no_matches_yet': "እስካሁን ምንም ማጣጣሚያዎች የሎትም።\nማጣጣሚያዎችን ለማግኘት መገለጫዎችን በ /search ይምረጡ!",
-            'matches_count': "💕 {count} ማጣጣሚያዎች አሎት!\n\nእነዚህ የእርስዎ የጋራ ማጣጣሚያዎች ናቸው፡",
-            'match_number': "ማጣጣሚያ #{number}",
-            'its_a_match': "💕 ማጣጣሚያ ነው{extra_photos}! ውይይቱን መጀመር ይፈልጋሉ?",
+            'no_matches_yet': "እርስዎን መልሰው ወዳጅ ያደረጉ ሰዎች የሉም::\nአዲስ ሰው ለማግኘት /search ይምረጡ ወይም ይቻኑት!",
+            'matches_count': "💕 {count} ወዳጆች አሎት!\n\nእነዚህ የእርስዎ የጋራ ማጣጣሚያዎች ናቸው፡",
+            'match_number': "ወዳጅ #{number}",
+            'its_a_match': "💕 ወዳጅ ነው{extra_photos}! ውይይቱን መጀመር ይፈልጋሉ?",
             
             # Complaint system
-            'complain_prompt': "📝 ቅሬታ ለመግባት\n\nቁጥሩን በመላክ ምክንያት ይምረጡ፡\n\n1. ተገቢ ያልሆኑ ፎቶዎች\n2. አሰታውቅ ወይም ማጭበርበር\n3. ሐሰተኛ መገለጫ\n4. ስፓም\n5. ስህተት/ቴክኒካል ችግር\n6. ክፍያ/የደንበኝነት ችግር\n7. የባህሪ ጥያቄ\n8. ሌላ\n\nቁጥሩን ይተይቡ እና ይላኩ (1-8)፡\nወይም ለማቆም /cancel ይተይቡ",
+            'complain_prompt': "📝 ቅሬታ ለማስገባት\n\nቁጥሩን በመላክ ምክንያት ይምረጡ፡\n\n1. ተገቢ ያልሆኑ ፎቶዎች\n2. ትንኮሳ ወይም ማስፈራራት\n3. ሐሰተኛ አካውንት\n4. ስፓም\n5. ስህተት/ቴክኒካል ችግር\n6. ክፍያ/የደንበኝነት ችግር\n7. የአገልግሎት ጥያቄ\n8. ሌላ\n\nቁጥሩን ይተይቡ እና ይላኩ (1-8)፡\nወይም ለማቆም /cancel ይተይቡ",
             'complaint_type_selected': "📝 የቅሬታ አይነት፡ {type}\n\nእባክዎ ቅሬታዎን በዝርዝር ይግለጹ (ከፍተኛ 500 ፊደላት)፡\n\nቅሬታዎን ከታች ይተይቡ፡\nወይም ለማቆም /cancel ይተይቡ",
             'invalid_complaint_number': "እባክዎ ትክክለኛ ቁጥር ከ1-8 ያስገቡ፡",
             'complaint_cancelled': "✅ ቅሬታ ተሰርዟል።",
@@ -364,8 +361,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             
             # Language settings
             'language_settings': "🌐 የቋንቋ ቅንብሮች\n\nአሁን ያለው ቋንቋ፡ {current_lang}\n\nየሚፈልጉትን ቋንቋ ይምረጡ፡",
-            'language_updated': "✅ ቋንቋዎ ተዘምኗል!\n\nቋንቋዎ ወደ {language} ተቀምጧል።\n\nቦቱ አሁን ለሁሉም ግንኙነቶች ይህን ቋንቋ ይጠቀማል።",
-            'language_update_failed': "ቋንቋ ማዘመን አልተቻለም። እባክዎ እንደገና ይሞክሩ።",
             
             # Coin system
             'buy_coins': "የ ሳንቲም ጥቅሎን ይምረጡ፡",
@@ -405,12 +400,12 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
 🤖 ኢትዮጵያ ኮንንት ቦት - የትእዛዝ መመሪያ
 
 🔍 መፈለጊያ እና ማጣጣሚያ፡
-• /search - አዳዲስ መገለጫዎችን ይፈልጉ
-• /likers - መገለጫዎን የወደዱትን ይመልከቱ  
-• /matches - የጋራ ማጣጣሚያዎችዎን ይመልከቱ
+• /search - አዳዲስ አካውንቶችን ይፈልጉ
+• /likers - ላይክ የወደዱትን ይመልከቱ  
+• /matches - የጋራ ወዳጆች ይመልከቱ
 
 👤 የመገለጫ አስተዳደር፡
-• /profile - መገለጫዎን ይመልከቱ
+• /profile - ላይክ ይመልከቱ
 • /language - የቦቱን ቋንቋ ይቀይሩ
 
 💰 ፕሪሚየም ባህሪያት፡
@@ -418,10 +413,10 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
 
 🛡️ ደህንነት እና ድጋፍ፡
 • /complaint - ችግሮችን ሪፖርት ያድርጉ ወይም አስተያየት ይላኩ
-• /deleteaccount - መለያዎን ዘላቂ ሰርዙ
+• /deleteaccount - አካውንቶን ያጥፉ
 
 💌 መልዕክት መላክ፡
-• መገለጫዎችን ሲያሰሩ መልዕክት ለመላክ ኢንላይን ቁልፎችን ይጠቀሙ
+• አካውንቶችን ሲያሰሩ መልዕክት ለመላክ ኢንላይን ቁልፎችን ይጠቀሙ
 
 🛠 የፕሮግራም ትእዛዞች፡
 • /help - ይህን የእገዛ መልእክት አሳይ
@@ -446,7 +441,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'language_tigrigna': "🇪🇹 Tigrinya",
             'incomplete_profile_registration': "እባክዎ መጀመሪያ ምዝገባዎን በ /start ይጨርሱ",
             'total_photos_count': "{count} ፎቶዎች አሎት።",
-            'messages_empty': "📨 መልዕክቶችዎ ሲመጡ እዚህ ይታያሉ።\nሰዎችን ለማገናኘት መገለጫዎችን መሰረም ይጀምሩ!",
+            'messages_empty': "📨 መልዕክቶችዎ ሲመጡ እዚህ ይታያሉ።\nሰዎችን ለማገናኘት አካውንቶችን መሰረም ይጀምሩ!",
             'profile_unknown': "የማይታወቅ",
             'profile_language': "🗣️ {profile_language}  |  🌍 {city}",
             'profile_city_not_specified': "አልተገለጸም",
@@ -457,20 +452,15 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'profile_stats': "❤️ Likes: {likes}   🤝 Matches: {matches}",
             
             # Lists formatting
-            'no_likes_yet_list': "እስካሁን ምንም አብዝተኞች የሉም።",
-            'likes_list_header': "❤️ መገለጫዎን የወደዱት ተጠቃሚዎች፡\n\n",
-            'no_matches_yet_list': "እስካሁን ምንም ማጣጣሚያዎች የሉም።",
-            'matches_list_header': "💕 የእርስዎ የጋራ ማጣጣሚያዎች፡\n\n",
+            'no_likes_yet_list': "እስካሁን ምንም ላይክ የሎትም።",
+            'likes_list_header': "❤️ ላይክ የወደዱት ተጠቃሚዎች፡\n\n",
+            'matches_list_header': "💕 የእርስዎ የጋራ match\n\n",
             'max_photos_reached': '❌ ከፍተኛ 2 ፎቶዎች ተደርሰዋል። ምዝገባዎ በፎቶዎችዎ ተጠናቅቋል።',
-            'one_photo_added': '✅ 1 ፎቶ ወደ መገለጫዎ ታክሏል',
-            'two_photos_added': '✅ 2 ፎቶዎች ወደ መገለጫዎ ታክለዋል',
             'insufficient_coins_for_message': '❌ መልእክት ለመላክ {cost} ሳንቲም ያስፈልግዎታል። በቂ balance የለዎትም።',
             'message_sent_free_remaining': '✅ መልእክት ተልኳል! {remaining} ነፃ መልእክቶች ይቀራሉ።',
             'message_sent_coins_deducted': '✅ መልእክት ተልኳል! {cost} ሳንቲም ተቀነሰ። የቀረ: {remaining} ሳንቲም',
-            'free_likers_display': '👥 ከ{total} ሰዎች ውስጥ {count} ሰዎችን ያሳይዎታል (ነፃ ቅድመ እይታ):',
-            'more_likers_available': '👀 የበለጠ የወደዱዎ {count} ሰዎች አሉ! ሁሉንም ለማየት /view_all_likers ትእዛዝ ይጠቀሙ ወይም ከዚህ በታች ይጫኑ ለ{cost} ሳንቲም።',
+            'more_likers_available': '👀 ሁሉንም ለማየት /view_all_likers ትእዛዝ ይጠቀሙ ለ{cost} ሳንቲም።',
             'insufficient_coins_for_likers': '❌ ሁሉንም የወደዱዎችን ለማየት {cost} ሳንቲም ያስፈልግዎታል። በቂ balance የለዎትም።',
-            'viewing_all_likers': '👀 ሁሉንም የወደዱዎ {total} ሰዎች እያሳየዎት ነው! ({cost} ሳንቲም ተቀንሷል)',
             'buy_coins_button': '💰 ሳንቲም ይግዙ',
             'view_all_likers_button': '👀 ሁሉንም የወደዱዎችን ይመልከቱ',
             'coin_deduction_failed': '❌ ሳንቲም መቀነስ አልተሳካም። እባክዎ እንደገና ይሞክሩ።',
@@ -480,8 +470,11 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'buy_coins_options': '💎 የሳንቲም ጥቅል ይምረጡ:',
             'no_coins_for_likers': '❌ ሁሉንም likers ለማየት {cost} ሳንቲም ያስፈልግዎታል። በቂ balance የለዎትም።',
             "welcome_back": "እንኳን ደህና መጡ፣ {first_name}! 🎉",
-            "registration_incomplete": "የእርስዎ ምዝገባ እንዳላጠናቀቁ ይመስላል። መገለጫዎን ለማጠናቀቅ እንቀጥል።",
+            "registration_incomplete": "የእርስዎ ምዝገባ እንዳላጠናቀቁ ይመስላል። ላይክ ለማጠናቀቅ እንቀጥል።",
             "no_username": "የተጠቃሚ ስም የለም",
+            'new_message_from': "📩 ከ{first_name} ({age}) የተላለፈ መልእክት",
+            'unsupported_message_type': "❌ ይህ የመልእክት አይነት አይደገፍም",
+            'find_new_people': "🔍 አዳዲስ ሰዎች ፈልግ",
 
             # Errors
             'error': "❌ ስህተት",
@@ -525,7 +518,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             
             # Other features
             'complaint_success': "✅ Daa'imaa kee nu ga'e!",
-            'language_updated': "✅ Afaan kee {language} ta'ee jira",
+            'language_updated': "✅ Afaan kee {profile_language} ta'ee jira",
             'screenshot_received': "✅ Kaffaltiin kee nu ga'e! Ilaalamuu jira.",
             'account_deleted': "✅ Akaawuntiin kee delete goffame!",
             'cancel': "❌ Dhiisi",
@@ -580,7 +573,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'no_matches_found': "😔 Yeroo ammaa kana profaayilii haaraa hin argamu.\nEegaa!",
             'action_prompt': "🔥 Profaayilii gaari! Muuxannoo gochuu qabdu?",
             'no_likes_yet': "Hanga ammaatti namni hin jaalalle.\nItti fufiinsa argachuuf itti fufi!",
-    'likes_count': "Namni {count} profaayilii kee jaalale!\n\nIsaan deebisuuf /search fayyadami!",
     'liker_number': "Jaalallee #{number}",
     'someone_liked_back': "🔥 Namni si jaalale{extra_photos}! Jaallatteettaa?",
     'no_matches_yet': "Hanga ammaatti walqabsiisota hin qabdu.\nWalqabsiisota argachuuf /search fayyadami!",
@@ -601,7 +593,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
     
     # Language settings
     'language_settings': "🌐 Saagiinsa Afaanii\n\nAmmaa afaan: {current_lang}\n\nAfaan filadhu:",
-    'language_updated': "✅ Afaan Sirriitti Jijjirame!\n\nAfaan kee {language} ta'ee jira.\n\nBoti kun amma afaan kana hojii hundaaf fayyadama.",
     'language_update_failed': "Afaan jijjiiruu hin dandeenye. Irra deebi'i.",
     
     # Coin system
@@ -696,7 +687,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             # Lists formatting
             'no_likes_yet_list': "Hanga ammaatti jaalalloo hin jiru.",
             'likes_list_header': "❤️ Fayyadamoonni profaayilii kee jaalalan:\n\n",
-            'no_matches_yet_list': "Hanga ammaatti walqabsiisota hin jiru.",
             'matches_list_header': "💕 Walqabsiisota kee:\n\n",
             'max_photos_reached': '❌ Fuulli 2 guutuu geessee. Galmeen kee fuulliwwan keetiin xumurameera.',
             'one_photo_added': '✅ Fuula 1 profile keetti dabalamte',
@@ -704,10 +694,8 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'insufficient_coins_for_message': '❌ Ergaa erguuf {cost} coins barbaachisa. Balansii kee hin ga\'u.',
             'message_sent_free_remaining': '✅ Ergaa darbame! Ergaa bilisaa {remaining} siif hafa.',
             'message_sent_coins_deducted': '✅ Ergaa darbame! Coins {cost} hir\'ifame. Haaraa: coins {remaining}',
-            'free_likers_display': '👥 Namoota {count} kan {total} irraa si jaalatan agarsiisa (fuula dursa bilisaa):',
-            'more_likers_available': '👀 Namoota {count} kan si jaalatan dabalataan jira! Hunda isaanii argachuuf ajaja /view_all_likers fayyadi yookiin gadi bu\'i coins {cost} fudhachuun.',
+            'more_likers_available': '👀 Hunda isaanii argachuuf ajaja /view_all_likers fayyadi bu\'i coins {cost} fudhachuun.',
             'insufficient_coins_for_likers': '❌ Jaalattoota hunda ilaaluuf coins {cost} barbaachisa. Balansii kee hin ga\'u.',
-            'viewing_all_likers': '👀 Namoota {total} hunda kan si jaalatan siif agarsiisa! (Coins {cost} hir\'ifame)',
             'buy_coins_button': '💰 Coins bitadhu',
             'view_all_likers_button': '👀 Jaalattoota Hunda Ilaali',
             'coin_deduction_failed': '❌ Coins hir\'isuun hin milkoofne. Irra deebi\'i yaali.',
@@ -719,6 +707,9 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             "welcome_back": "Baga nagaan dhuftan, {first_name}! 🎉",
             "registration_incomplete": "Galmeessi keessan hin xumuran jira jedhutti nidanda'ama. Profaayilii keessan guutuu itti fufaa.",
             "no_username": "Maqaa Fayyadamaa Hin Qabu",
+            'new_message_from': "📩 Ergaa haarawa {first_name} irraa ({age})",
+            'unsupported_message_type': "❌ Gosa ergaa kana hin deeggaramu",
+            'find_new_people': "🔍 Nama Haaraa Barbaadi",
 
             # Errors
             'error': "❌ Dogoggora",
@@ -762,7 +753,7 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             
             # Other features
             'complaint_success': "✅ ቅሬታኹም ቀሪቡ!",
-            'language_updated': "✅ ቋንቋኹም ናብ {language} ተቐይሩ",
+            'language_updated': "✅ ቋንቋኹም ናብ {profile_language} ተቐይሩ",
             'screenshot_received': "✅ ክፍሊትኩም ተቐቢሉ! ኣብ መጣኒፅ እዩ።",
             'account_deleted': "✅ ኣካውንትኩም ተሰሪዙ!",
             'cancel': "❌ ኣትርፍ",
@@ -817,7 +808,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'no_matches_found': "😔 ኣብ እዋን እዚ ሓድሽ ፕሮፋይላት ኣይተረኽቡን።\nተጸበዩ!",
             'action_prompt': "🔥 ጽቡቕ ፕሮፋይል! ክትሰርሑ ድሉዉ ኢኹም?",
             'no_likes_yet': "ክሳዕ ሕጂ ሰብ ኣይፈትወኩምን።\nተጸበዩ ንዝያዳ ርእይቶ ክትረኽቡ!",
-    'likes_count': "{count} ሰባት ፕሮፋይልኩም ፈቲዖምዎ!\n\nንሳቶም ክፈትዉ ከምኡ'ውን ምስማር ንምፍጣር /search ተጠቐሙ!",
     'liker_number': "ፈታዊ #{number}",
     'someone_liked_back': "🔥 ሓደ ሰብ ፈቲዑኻ{extra_photos}! ኣገዳሲ ዲኻ?",
     'no_matches_yet': "ክሳዕ ሕጂ ምንም ምስማር የለን።\nምስማር ንምርካብ ፕሮፋይላት ብ /search ክትፈትዉ ጀምሩ!",
@@ -838,7 +828,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
     
     # Language settings
     'language_settings': "🌐 ቋንቋ ቅጥዒ\n\nኣሁኑ ቋንቋ፡ {current_lang}\n\n�ቲ ዚፈቱዎ ቋንቋ ምረጹ፡",
-    'language_updated': "✅ ቋንቋኹም ብትኽክል ተቐይሩ!\n\n�ቋንቋኹም ናብ {language} ተቐሚጡ።\n\n�ቦት ካብ ሕጂ ንኹሉ ርክባት ነዚ ቋንቋ እዩ ዚጥቀመሉ።",
     'language_update_failed': "ቋንቋ ምቕያር ኣይተኻእለን። በጃኹም ደጊምኩም ፈትኑ።",
     
     # Coin system
@@ -933,7 +922,6 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             # Lists formatting
             'no_likes_yet_list': "ክሳዕ ሕጂ ምንም ፈታውቲ የለን።",
             'likes_list_header': "❤️ ፕሮፋይልኩም ዝፈትዉ ተጠቃሚታት፡\n\n",
-            'no_matches_yet_list': "ክሳዕ ሕጂ ምንም ምስማር የለን።",
             'matches_list_header': "💕 ዝተካፈሉ ምስማርኩም፡\n\n",
             'max_photos_reached': '❌ ውሕድ 2 ስእልታት በጽሒፍካ። ምዝገባኻ ብስእልታትኻ ተወዲኡ ኣሎ።',
             'one_photo_added': '✅ 1 ስእሊ ናብ መግለጺኻ ተወሲኑ',
@@ -941,10 +929,8 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'insufficient_coins_for_message': '❌ መልእኽቲ ንምልኣኽ {cost} ሳንቲም የድሊ። እኹል balance የብልካን።',
             'message_sent_free_remaining': '✅ መልእኽቲ ተልኢሉ! {remaining} ነፃ መልእኽታት ይተርፍልካ።',
             'message_sent_coins_deducted': '✅ መልእኽቲ ተልኢሉ! {cost} ሳንቲም ተቐንጢጡ። ዝተረፈ: {remaining} ሳንቲም',
-            'free_likers_display': '👥 ካብ {total} ሰባት {count} ሰባት እተፈትዉካ የርኢኻ (ነፃ ናይ ቅድሚ ምርኣይ):',
-            'more_likers_available': '👀 {count} ካልኦት ሰባት እተፈትዉካ ኣሎዉ! ንኹሎም ንምርኣይ ኣኼባ /view_all_likers ትጥቀም ወይ ኣብ ታሕቲ ጠውቕ ብ{cost} ሳንቲም።',
+            'more_likers_available': '👀 ንኹሎም ንምርኣይ ኣኼባ /view_all_likers ትጥቀም ብ{cost} ሳንቲም።',
             'insufficient_coins_for_likers': '❌ ኩሎም እተፈትዉካ ንምርኣይ {cost} ሳንቲም የድሊ። እኹል balance የብልካን።',
-            'viewing_all_likers': '👀 ኩሎም {total} ሰባት እተፈትዉካ የርኢኻ! ({cost} ሳንቲም ተቐንጢጡ)',
             'buy_coins_button': '💰 ሳንቲም ይግዛ',
             'view_all_likers_button': '👀 ኩሎም እተፈትዉካ ርኣይ',
             'coin_deduction_failed': '❌ ሳንቲም ምቁራጽ ኣይተኻኽለን። በጃኻ ደጊምካ ፈትን።',
@@ -956,6 +942,9 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             "welcome_back": "እንቋዕ ብደሓን መጻእኩም፣ {first_name}! 🎉",
             "registration_incomplete": "ምዝገባኹም ከምዘይተወዳደረ ይመስል። ናብርና መግለጺ ናትኩም ንወድእዎ።",
             "no_username": "የሎ ተጠቃሚ ስም",
+            'new_message_from': "📩 ሓድሽ መልእኽቲ ካብ {first_name} ({age})",
+            'unsupported_message_type': "❌ እዚ ዓይነት መልእኽቲ ኣይደገፍን",
+            'find_new_people': "🔍 ሓድሽ ሰባት ረኺብ",
             
             # Errors
             'error': "❌ ጌጋ",

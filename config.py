@@ -23,7 +23,7 @@ class Config:
     MIN_AGE: int = 18
     MAX_AGE: int = 100
     # In config.py for development
-    WEBHOOK_URL = "https://unmollified-ungradually-verna.ngrok-free.dev"  # Get from: ngrok http 8080
+    WEBHOOK_URL = "https://dating-bot-lz3t.onrender.com"  # Get from: ngrok http 8080
     WEBHOOK_PATH = "/webhook"
     WEBAPP_HOST = "0.0.0.0"
     WEBAPP_PORT = 8080

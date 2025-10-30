@@ -193,8 +193,8 @@ class Database:
         finally:
             cursor.close()
     
-    def get_users_for_matching(self, user_id: int, gender: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get potential matches for a user (opposite gender, not liked/blocked)"""
+    def get_users_for_matching(self, user_id: int, gender: str) -> List[Dict[str, Any]]:
+        """Get potential matches for a user (opposite gender, not liked/blocked/swiped)"""
         cursor = self.conn.cursor(cursor_factory=RealDictCursor)
         
         # Get opposite gender
@@ -209,10 +209,14 @@ class Database:
                 AND u.user_id NOT IN (
                     SELECT blocked_user_id FROM blocks WHERE user_id = %s
                 )
+                AND u.user_id NOT IN (
+                    SELECT liked_user_id FROM likes WHERE user_id = %s
+                )
                 AND u.photos IS NOT NULL
                 AND u.bio IS NOT NULL
-                LIMIT %s
-            ''', (opposite_gender, user_id, user_id, limit))
+                AND u.photos != '[]'
+                AND u.bio != ''
+            ''', (opposite_gender, user_id, user_id, user_id))
             
             return cursor.fetchall()
         except Exception as e:

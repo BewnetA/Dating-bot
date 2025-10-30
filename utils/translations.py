@@ -4,7 +4,7 @@ def get_user_language(user_id: int, db) -> str:
     """Get user's preferred language from database"""
     user_data = db.get_user(user_id)
     return user_data.get('language', 'english') if user_data else 'english'
-"free_conis_awarded"
+"registration_error"
 def get_text(key: str, language: str = 'english', **kwargs) -> str:
     """Get translated text for a given key and language"""
     translations = {
@@ -242,6 +242,8 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'new_message_from': "📩 New message from {first_name} ({age})",
             'unsupported_message_type': "❌ This message type is not supported",
             'find_new_people': "🔍 Find New People",
+            'registration_error': "❌ Registration failed. Please try again with /start",
+            'no_photos_added': "Please add at least one photo before completing registration. Tap the button below to share photos.",
 
 
             # Errors
@@ -475,6 +477,8 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'new_message_from': "📩 ከ{first_name} ({age}) የተላለፈ መልእክት",
             'unsupported_message_type': "❌ ይህ የመልእክት አይነት አይደገፍም",
             'find_new_people': "🔍 አዳዲስ ሰዎች ፈልግ",
+            'registration_error': "❌ ምዝገባው አልተሳካም። እባክዎን እንደገና በ /start ይሞክሩ",
+            'no_photos_added': "እባክዎን ምዝገባውን ከማጠናቀቅዎ በፊት ቢያንስ አንድ ፎቶ ይላኩ። ፎቶዎችን ለማካፈል ከታች ያለውን ቁልፍ ይጫኑ።",
 
             # Errors
             'error': "❌ ስህተት",
@@ -710,6 +714,8 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'new_message_from': "📩 Ergaa haarawa {first_name} irraa ({age})",
             'unsupported_message_type': "❌ Gosa ergaa kana hin deeggaramu",
             'find_new_people': "🔍 Nama Haaraa Barbaadi",
+            'registration_error': "❌ Galmeen hin guutamne. Maaloo /start irratti deebi'ii yaali",
+            'no_photos_added': "Maaloo galmaa'aa xumuruu keessaa dura fakkii tokko ol ta'ee niroo fayyadami. Fakkiiwwan kessaaniif gargaaruuf cuqaasa armaan gadii cuqsiisi.",
 
             # Errors
             'error': "❌ Dogoggora",
@@ -945,6 +951,8 @@ def get_text(key: str, language: str = 'english', **kwargs) -> str:
             'new_message_from': "📩 ሓድሽ መልእኽቲ ካብ {first_name} ({age})",
             'unsupported_message_type': "❌ እዚ ዓይነት መልእኽቲ ኣይደገፍን",
             'find_new_people': "🔍 ሓድሽ ሰባት ረኺብ",
+            'registration_error': "❌ ምዝገባ ኣይተኸኣለን። በጃኹም ብ /start ደጊምኩም ፈትኑ",
+            'no_photos_added': "በጃኹም ምዝገባ ክትውድኑ ቅድሚኡ እንተወሓደ ሓንቲ ስእሊ ኣክሉ። ስእልታት ንምክፋል ኣብ ታሕቲ ዘሎ ክሊክ ግበሩ።",
             
             # Errors
             'error': "❌ ጌጋ",

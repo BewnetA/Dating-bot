@@ -278,15 +278,12 @@ async def process_photos(message: Message, state: FSMContext):
     user_data = await state.get_data()
     photos = user_data.get('photos', [])
     
-    # Get the highest quality photo
     photo_file_id = message.photo[-1].file_id
     
-    # Prevent duplicate photos
     if photo_file_id in photos:
         await message.answer(get_text('duplicate_photo', user_lang))
         return
     
-    # STRICTLY limit to maximum 2 photos
     if len(photos) >= config.MAX_PHOTOS:
         await message.answer(get_text('max_photos_reached', user_lang))
         return
@@ -294,49 +291,32 @@ async def process_photos(message: Message, state: FSMContext):
     photos.append(photo_file_id)
     await state.update_data(photos=photos)
     
-    # If first photo, start timer for second photo
-    if len(photos) >= 1:
-        
-        # Create timer task specifically for this user (2 seconds)
-        timer_task = asyncio.create_task(photo_timer_handler(user_id, message, state, user_lang))
-        
-        # Store timer reference in state data
-        await state.update_data(
-            photo_timer_started=True,
-            registration_completed=False
-        )
-        
-        # Store the task in a global dictionary as backup
-        # But primarily rely on the timer logic within the task itself
-        if 'photo_timers' not in globals():
-            globals()['photo_timers'] = {}
-        globals()['photo_timers'][user_id] = timer_task
+    remaining = config.MAX_PHOTOS - len(photos)
     
+    if remaining > 0:
+        await message.answer(
+            f"✅ Photo {len(photos)}/{config.MAX_PHOTOS} added!\n"
+            f"Send another photo or press /done to finish."
+        )
+    else:
+        await complete_registration(message, state, photos, user_lang)
 
-async def photo_timer_handler(user_id: int, message: Message, state: FSMContext, user_lang: str):
-    """Handle the timer for waiting for second photo - wait 2 seconds"""
-    try:
-        # Wait for 2 seconds
-        await asyncio.sleep(2)
-        
-        # Check if we still need to complete registration
-        current_data = await state.get_data()
-        current_photos = current_data.get('photos', [])
-        
-        # Only proceed if we still have exactly 1 photo and registration not completed
-        if len(current_photos) == 1 and not current_data.get('registration_completed', False):
-            await complete_registration(message, state, current_photos, user_lang)
-            
-    except asyncio.CancelledError:
-        # Timer was cancelled because second photo was received
-        print(f"photo_timer_handler: Timer cancelled for user {user_id} - second photo not received")
-        pass
-    except Exception as e:
-        logging.error(f"Timer error for user {user_id}: {e}")
-    finally:
-        # Clean up the global timer reference
-        if 'photo_timers' in globals() and user_id in globals()['photo_timers']:
-            del globals()['photo_timers'][user_id]
+# Add a command to manually complete registration
+@router.message(RegistrationStates.sharing_photos, Command("done"))
+async def complete_manually(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    user_lang = get_user_language(user_id, db)
+    user_data = await state.get_data()
+    photos = user_data.get('photos', [])
+    
+    if len(photos) >= 1:
+        await complete_registration(message, state, photos, user_lang)
+    else:
+        # Handle case when no photos have been added
+        await message.answer(
+            get_text('no_photos_added', user_lang),
+            reply_markup=get_share_photo
+        )
 
 async def complete_registration(message: Message, state: FSMContext, photos: list, user_lang: str):
     """Complete the registration process"""
@@ -380,6 +360,6 @@ async def complete_registration(message: Message, state: FSMContext, photos: lis
         await state.clear()
         
         # Redirect to browse profiles
-        await show_browse_profiles(message,user_id)
+        await show_browse_profiles(message)
     else:
         await message.answer(get_text('photos_save_error', user_lang))

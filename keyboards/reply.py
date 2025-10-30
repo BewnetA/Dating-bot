@@ -50,6 +50,11 @@ def get_location_keyboard():
     # keyboard.adjust(1)
     return keyboard.as_markup(resize_keyboard=True)
 
+def get_share_photo():
+    return ReplyKeyboardMarkup(
+                keyboard=[[KeyboardButton(text="📸 Share Photos")]],
+                resize_keyboard=True)
+
 # # Ethiopian cities
 # def get_cities_keyboard():
 #     keyboard = ReplyKeyboardBuilder()

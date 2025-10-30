@@ -250,6 +250,16 @@ async def show_next_after_action(callback: CallbackQuery, user_id: int):
     
     matches = user_data.get('current_matches', [])
     current_index = user_data.get('current_index', 0) + 1
+    
+    # Check if matches list is empty
+    if not matches:
+        await callback.message.answer(get_text('no_matches_found', user_lang))
+        # Set current_index to 0 and save to prevent continuous refetch attempts
+        user_state.update_data(user_id, {
+            "current_matches": [],
+            "current_index": 0
+        })
+        return
         
     # Check if we've reached the end of current matches
     if current_index >= len(matches):
@@ -257,13 +267,13 @@ async def show_next_after_action(callback: CallbackQuery, user_id: int):
         
         user_profile_data = db.get_user(user_id)
         if not user_profile_data or not user_profile_data.get('gender'):
-            await callback.answer(get_text('profile_setup_required', user_lang), show_alert=True)
+            await callback.message.answer(get_text('profile_setup_required', user_lang))
             return
         
         fresh_matches = db.get_users_for_matching(user_id, user_profile_data['gender'])
         
         if not fresh_matches:
-            await callback.answer(get_text('no_matches', user_lang), show_alert=True)
+            await callback.message.answer(get_text('no_matches_found', user_lang))
             # Update state to prevent continuous refetch attempts
             user_state.update_data(user_id, {
                 "current_matches": matches,
